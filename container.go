@@ -26,7 +26,7 @@ type Container interface {
 	// Call 使用容器调用函数，支持依赖注入
 	Call(interface{}, ...interface{}) []interface{}
 	// DI 为结构体执行依赖注入
-	DI(object interface{}, args ...interface{})
+	DI(object interface{}, args ...interface{}) error
 }
 
 // Component 支持依赖注入的接口
