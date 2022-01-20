@@ -139,16 +139,10 @@ type QueryBuilder interface {
 	GetBindings() (results []interface{})
 
 	Offset(offset int64) QueryBuilder
+	Skip(offset int64) QueryBuilder
 	Limit(num int64) QueryBuilder
-	WithPagination(perPage, current int64) QueryBuilder
-
-	Create(fields Fields) interface{}
-	Insert(values ...Fields) interface{}
-	Delete() int64
-	Update(fields Fields) int64
-	Get() interface{}
-	Find(key interface{}) interface{}
-	First() interface{}
+	Take(num int64) QueryBuilder
+	WithPagination(perPage int64, current ...int64) QueryBuilder
 
 	SelectSql() (string, []interface{})
 	CreateSql(value Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
@@ -157,4 +151,17 @@ type QueryBuilder interface {
 	InsertReplaceSql(values []Fields) (sql string, bindings []interface{})
 	DeleteSql() (sql string, bindings []interface{})
 	UpdateSql(value Fields) (sql string, bindings []interface{})
+
+	// SetTX 预留给实现端添加事物
+	SetTX(tx interface{}) QueryBuilder
+
+	Create(fields Fields) interface{}
+	Insert(values ...Fields) interface{}
+	Delete() int64
+	Update(fields Fields) int64
+	Get() interface{}
+	Find(key interface{}) interface{}
+	First() interface{}
+	Paginate(perPage int64, current ...int64) (interface{}, int64)
+	SimplePaginate(perPage int64, current ...int64) interface{}
 }
