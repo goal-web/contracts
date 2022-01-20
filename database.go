@@ -33,7 +33,7 @@ type DBConnection interface {
 
 type Callback func(QueryBuilder) QueryBuilder
 type Provider func() QueryBuilder
-type whereFunc func(QueryBuilder)
+type WhereFunc func(QueryBuilder)
 type whereJoinType string
 type unionJoinType string
 
@@ -93,8 +93,8 @@ type QueryBuilder interface {
 
 	Where(column string, args ...interface{}) QueryBuilder
 	OrWhere(column string, args ...interface{}) QueryBuilder
-	WhereFunc(callback whereFunc, whereType ...whereJoinType) QueryBuilder
-	OrWhereFunc(callback whereFunc) QueryBuilder
+	WhereFunc(callback WhereFunc, whereType ...whereJoinType) QueryBuilder
+	OrWhereFunc(callback WhereFunc) QueryBuilder
 
 	WhereIn(column string, args interface{}) QueryBuilder
 	OrWhereIn(column string, args interface{}) QueryBuilder
@@ -129,7 +129,7 @@ type QueryBuilder interface {
 	OrderByDesc(column string)
 
 	When(condition bool, callback Callback, elseCallback ...Callback)
-	
+
 	ToSql() string
 	GetBindings() (results []interface{})
 
