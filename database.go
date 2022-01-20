@@ -101,9 +101,9 @@ type QueryBuilder interface {
 	WhereFunc(callback QueryFunc, whereType ...WhereJoinType) QueryBuilder
 	OrWhereFunc(callback QueryFunc) QueryBuilder
 
-	WhereIn(column string, args interface{}) QueryBuilder
+	WhereIn(column string, args interface{}, whereType ...WhereJoinType) QueryBuilder
 	OrWhereIn(column string, args interface{}) QueryBuilder
-	WhereNotIn(column string, args interface{}) QueryBuilder
+	WhereNotIn(column string, args interface{}, whereType ...WhereJoinType) QueryBuilder
 	OrWhereNotIn(column string, args interface{}) QueryBuilder
 
 	WhereBetween(column string, args interface{}, whereType ...WhereJoinType) QueryBuilder
@@ -111,10 +111,10 @@ type QueryBuilder interface {
 	WhereNotBetween(column string, args interface{}, whereType ...WhereJoinType) QueryBuilder
 	OrWhereNotBetween(column string, args interface{}) QueryBuilder
 
-	WhereIsNull(column string, whereType ...string) QueryBuilder
+	WhereIsNull(column string, whereType ...WhereJoinType) QueryBuilder
 	OrWhereIsNull(column string) QueryBuilder
 	OrWhereNotNull(column string) QueryBuilder
-	WhereNotNull(column string, whereType ...string) QueryBuilder
+	WhereNotNull(column string, whereType ...WhereJoinType) QueryBuilder
 
 	WhereExists(provider QueryProvider, where ...WhereJoinType) QueryBuilder
 	OrWhereExists(provider QueryProvider) QueryBuilder
