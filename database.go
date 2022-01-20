@@ -140,6 +140,7 @@ type QueryBuilder interface {
 
 	Offset(offset int64) QueryBuilder
 	Limit(num int64) QueryBuilder
+	WithPagination(perPage, current int64) QueryBuilder
 
 	Create(fields Fields) interface{}
 	Insert(values ...Fields) interface{}
