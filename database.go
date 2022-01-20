@@ -31,9 +31,9 @@ type DBConnection interface {
 	DriverName() string
 }
 
-type Callback func(QueryBuilder) QueryBuilder
-type Provider func() QueryBuilder
-type WhereFunc func(QueryBuilder)
+type QueryCallback func(QueryBuilder) QueryBuilder
+type QueryProvider func() QueryBuilder
+type QueryFunc func(QueryBuilder)
 type WhereJoinType string
 type UnionJoinType string
 
@@ -70,8 +70,8 @@ const (
 type QueryBuilder interface {
 	Select(column string, columns ...string) QueryBuilder
 	AddSelect(columns ...string) QueryBuilder
-	SelectSub(provider Provider, as string) QueryBuilder
-	AddSelectSub(provider Provider, as string) QueryBuilder
+	SelectSub(provider QueryProvider, as string) QueryBuilder
+	AddSelectSub(provider QueryProvider, as string) QueryBuilder
 	Count(columns ...string) QueryBuilder
 	Avg(column string, as ...string) QueryBuilder
 	Sum(column string, as ...string) QueryBuilder
@@ -82,10 +82,10 @@ type QueryBuilder interface {
 
 	From(table string, as ...string) QueryBuilder
 	FromMany(tables ...string) QueryBuilder
-	FromSub(provider Provider, as string) QueryBuilder
+	FromSub(provider QueryProvider, as string) QueryBuilder
 
 	Join(table string, first, condition, second string, joins ...JoinType) QueryBuilder
-	JoinSub(provider Provider, as, first, condition, second string, joins ...JoinType) QueryBuilder
+	JoinSub(provider QueryProvider, as, first, condition, second string, joins ...JoinType) QueryBuilder
 	FullJoin(table string, first, condition, second string) QueryBuilder
 	FullOutJoin(table string, first, condition, second string) QueryBuilder
 	LeftJoin(table string, first, condition, second string) QueryBuilder
@@ -93,8 +93,8 @@ type QueryBuilder interface {
 
 	Where(column string, args ...interface{}) QueryBuilder
 	OrWhere(column string, args ...interface{}) QueryBuilder
-	WhereFunc(callback WhereFunc, whereType ...WhereJoinType) QueryBuilder
-	OrWhereFunc(callback WhereFunc) QueryBuilder
+	WhereFunc(callback QueryFunc, whereType ...WhereJoinType) QueryBuilder
+	OrWhereFunc(callback QueryFunc) QueryBuilder
 
 	WhereIn(column string, args interface{}) QueryBuilder
 	OrWhereIn(column string, args interface{}) QueryBuilder
@@ -111,15 +111,15 @@ type QueryBuilder interface {
 	OrWhereNotNull(column string) QueryBuilder
 	WhereNotNull(column string, whereType ...string) QueryBuilder
 
-	WhereExists(provider Provider, where ...WhereJoinType) QueryBuilder
-	OrWhereExists(provider Provider) QueryBuilder
-	WhereNotExists(provider Provider, where ...WhereJoinType) QueryBuilder
-	OrWhereNotExists(provider Provider) QueryBuilder
+	WhereExists(provider QueryProvider, where ...WhereJoinType) QueryBuilder
+	OrWhereExists(provider QueryProvider) QueryBuilder
+	WhereNotExists(provider QueryProvider, where ...WhereJoinType) QueryBuilder
+	OrWhereNotExists(provider QueryProvider) QueryBuilder
 
 	Union(builder QueryBuilder, unionType ...UnionJoinType) QueryBuilder
 	UnionAll(builder QueryBuilder) QueryBuilder
-	UnionByProvider(builder Provider, unionType ...UnionJoinType) QueryBuilder
-	UnionAllByProvider(builder Provider) QueryBuilder
+	UnionByProvider(builder QueryProvider, unionType ...UnionJoinType) QueryBuilder
+	UnionAllByProvider(builder QueryProvider) QueryBuilder
 
 	GroupBy(columns ...string) QueryBuilder
 	Having(column string, args ...interface{}) QueryBuilder
@@ -128,7 +128,7 @@ type QueryBuilder interface {
 	OrderBy(column string, columnOrderType ...OrderType)
 	OrderByDesc(column string)
 
-	When(condition bool, callback Callback, elseCallback ...Callback)
+	When(condition bool, callback QueryCallback, elseCallback ...QueryCallback)
 
 	ToSql() string
 	GetBindings() (results []interface{})
