@@ -67,6 +67,11 @@ const (
 	InsertReplace InsertType = "replace"
 )
 
+const (
+	And WhereJoinType = "and"
+	Or  WhereJoinType = "or"
+)
+
 type QueryBuilder interface {
 	Select(column string, columns ...string) QueryBuilder
 	AddSelect(columns ...string) QueryBuilder
@@ -125,10 +130,10 @@ type QueryBuilder interface {
 	Having(column string, args ...interface{}) QueryBuilder
 	OrHaving(column string, args ...interface{}) QueryBuilder
 
-	OrderBy(column string, columnOrderType ...OrderType)
-	OrderByDesc(column string)
+	OrderBy(column string, columnOrderType ...OrderType) QueryBuilder
+	OrderByDesc(column string) QueryBuilder
 
-	When(condition bool, callback QueryCallback, elseCallback ...QueryCallback)
+	When(condition bool, callback QueryCallback, elseCallback ...QueryCallback) QueryBuilder
 
 	ToSql() string
 	GetBindings() (results []interface{})
