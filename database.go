@@ -138,6 +138,17 @@ type QueryBuilder interface {
 	ToSql() string
 	GetBindings() (results []interface{})
 
+	Offset(offset int64) QueryBuilder
+	Limit(num int64) QueryBuilder
+
+	Create(fields Fields) interface{}
+	Insert(values ...Fields) interface{}
+	Delete() int64
+	Update(fields Fields) int64
+	Get() interface{}
+	Find(key interface{}) interface{}
+	First() interface{}
+
 	SelectSql() (string, []interface{})
 	CreateSql(value Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
 	InsertSql(values []Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
