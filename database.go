@@ -179,7 +179,7 @@ type QueryBuilder interface {
 	Find(key interface{}) interface{}
 	First() interface{}
 	FirstOr(provider InstanceProvider) interface{}
-	FirstOrFail(provider InstanceProvider) interface{}
+	FirstOrFail() interface{}
 	FirstWhere(column string, args ...interface{}) interface{}
 
 	Delete() int64
