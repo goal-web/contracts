@@ -8,7 +8,7 @@ type Result interface {
 }
 
 type DBFactory interface {
-	Connection(key string) DBConnection
+	Connection(key ...string) DBConnection
 	Extend(name string, driver DBConnector)
 }
 
