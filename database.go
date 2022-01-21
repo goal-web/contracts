@@ -187,4 +187,6 @@ type QueryBuilder interface {
 
 	Paginate(perPage int64, current ...int64) (interface{}, int64)
 	SimplePaginate(perPage int64, current ...int64) interface{}
+
+	Bind(QueryBuilder) QueryBuilder
 }
