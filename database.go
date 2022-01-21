@@ -19,6 +19,7 @@ type DBTx interface {
 }
 
 type SqlExecutor interface {
+	Query() ([]Fields, error)
 	Get(dest interface{}, query string, args ...interface{}) error
 	Select(dest interface{}, query string, args ...interface{}) error
 	Exec(query string, args ...interface{}) (Result, error)
