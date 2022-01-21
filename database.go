@@ -78,11 +78,18 @@ type QueryBuilder interface {
 	AddSelect(columns ...string) QueryBuilder
 	SelectSub(provider QueryProvider, as string) QueryBuilder
 	AddSelectSub(provider QueryProvider, as string) QueryBuilder
-	Count(columns ...string) QueryBuilder
-	Avg(column string, as ...string) QueryBuilder
-	Sum(column string, as ...string) QueryBuilder
-	Max(column string, as ...string) QueryBuilder
-	Min(column string, as ...string) QueryBuilder
+
+	WithCount(columns ...string) QueryBuilder
+	WithAvg(column string, as ...string) QueryBuilder
+	WithSum(column string, as ...string) QueryBuilder
+	WithMax(column string, as ...string) QueryBuilder
+	WithMin(column string, as ...string) QueryBuilder
+
+	Count(columns ...string) int64
+	Avg(column string, as ...string) int64
+	Sum(column string, as ...string) int64
+	Max(column string, as ...string) int64
+	Min(column string, as ...string) int64
 
 	Distinct() QueryBuilder
 
@@ -156,13 +163,27 @@ type QueryBuilder interface {
 	// SetTX 预留给实现端添加事物
 	SetTX(tx interface{}) QueryBuilder
 
+	Insert(values ...Fields) bool
+	InsertGetId(values ...Fields) int64
+	InsertOrIgnore(values ...Fields) int64
+	InsertOrReplace(values ...Fields) int64
+
 	Create(fields Fields) interface{}
-	Insert(values ...Fields) interface{}
-	Delete() int64
+	FirstOrCreate(values ...Fields) interface{}
+
 	Update(fields Fields) int64
+	UpdateOrInsert(attributes Fields, values ...Fields) bool
+	UpdateOrCreate(attributes Fields, values ...Fields) interface{}
+
 	Get() interface{}
 	Find(key interface{}) interface{}
 	First() interface{}
+	FirstOr(provider InstanceProvider) interface{}
+	FirstOrFail(provider InstanceProvider) interface{}
+	FirstWhere(column string, args ...interface{}) interface{}
+
+	Delete() int64
+
 	Paginate(perPage int64, current ...int64) (interface{}, int64)
 	SimplePaginate(perPage int64, current ...int64) interface{}
 }
