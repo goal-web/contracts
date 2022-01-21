@@ -105,6 +105,7 @@ type QueryBuilder interface {
 	RightJoin(table string, first, condition, second string) QueryBuilder
 
 	Where(column string, args ...interface{}) QueryBuilder
+	WhereFields(fields Fields) QueryBuilder
 	OrWhere(column string, args ...interface{}) QueryBuilder
 	WhereFunc(callback QueryFunc, whereType ...WhereJoinType) QueryBuilder
 	OrWhereFunc(callback QueryFunc) QueryBuilder
