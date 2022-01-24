@@ -161,8 +161,7 @@ type QueryBuilder interface {
 	DeleteSql() (sql string, bindings []interface{})
 	UpdateSql(value Fields) (sql string, bindings []interface{})
 
-	// SetTX 预留给实现端添加事物
-	SetTX(tx interface{}) QueryBuilder
+	SetExecutor(executor SqlExecutor) QueryBuilder
 
 	Insert(values ...Fields) bool
 	InsertGetId(values ...Fields) int64
@@ -176,7 +175,7 @@ type QueryBuilder interface {
 	UpdateOrInsert(attributes Fields, values ...Fields) bool
 	UpdateOrCreate(attributes Fields, values ...Fields) interface{}
 
-	Get() interface{}
+	Get() DBCollection
 	Find(key interface{}) interface{}
 	First() interface{}
 	FirstOr(provider InstanceProvider) interface{}
@@ -189,4 +188,11 @@ type QueryBuilder interface {
 	SimplePaginate(perPage int64, current ...int64) interface{}
 
 	Bind(QueryBuilder) QueryBuilder
+}
+
+type DBCollection interface {
+	Collection
+
+	Update(fields Fields) error
+	Delete() error
 }
