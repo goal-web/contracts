@@ -153,6 +153,9 @@ type QueryBuilder interface {
 	Take(num int64) QueryBuilder
 	WithPagination(perPage int64, current ...int64) QueryBuilder
 
+	Chunk(size int, handler func(collection Collection, page int) error) error
+	ChunkById(size int, handler func(collection Collection, page int) error) error
+
 	SelectSql() (string, []interface{})
 	CreateSql(value Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
 	InsertSql(values []Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
