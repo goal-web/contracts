@@ -1,6 +1,8 @@
 package contracts
 
-import "sort"
+import (
+	"sort"
+)
 
 type Fields map[string]interface{}
 
@@ -70,8 +72,10 @@ type Collection interface {
 	Pull(defaultValue ...interface{}) interface{}
 	// Shift 从头部获取并移出一个元素
 	Shift(defaultValue ...interface{}) interface{}
-	// Put 替换一个元素，如果 index 不存在会执行 Push
+	// Put 替换一个元素，如果 index 不存在会执行 Push，返回新集合
 	Put(index int, item interface{}) Collection
+	// Offset 替换一个元素，如果 index 不存在会执行 Push
+	Offset(index int, item interface{}) Collection
 	// Merge 合并其他集合
 	Merge(collections ...Collection) Collection
 	// Reverse 返回一个顺序翻转后的集合
