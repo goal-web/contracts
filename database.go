@@ -175,7 +175,7 @@ type QueryBuilder interface {
 	UpdateOrInsert(attributes Fields, values ...Fields) bool
 	UpdateOrCreate(attributes Fields, values ...Fields) interface{}
 
-	Get() DBCollection
+	Get() Collection
 	Find(key interface{}) interface{}
 	First() interface{}
 	FirstOr(provider InstanceProvider) interface{}
@@ -188,11 +188,4 @@ type QueryBuilder interface {
 	SimplePaginate(perPage int64, current ...int64) interface{}
 
 	Bind(QueryBuilder) QueryBuilder
-}
-
-type DBCollection interface {
-	Collection
-
-	Update(fields Fields) error
-	Delete() error
 }
