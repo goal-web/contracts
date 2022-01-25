@@ -1,6 +1,6 @@
 package contracts
 
-type DBConnector func(config Fields) DBConnection
+type DBConnector func(config Fields, dispatcher EventDispatcher) DBConnection
 
 type Result interface {
 	LastInsertId() (int64, error)
