@@ -192,3 +192,8 @@ type QueryBuilder interface {
 
 	Bind(QueryBuilder) QueryBuilder
 }
+
+type Model interface {
+	GetTable() string
+	GetConnection() string
+}
