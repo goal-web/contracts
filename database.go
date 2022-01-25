@@ -194,6 +194,7 @@ type QueryBuilder interface {
 }
 
 type Model interface {
+	GetClass() Class
 	GetTable() string
 	GetConnection() string
 }

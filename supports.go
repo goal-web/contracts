@@ -6,6 +6,11 @@ import (
 
 type Fields map[string]interface{}
 
+type Class interface {
+	ClassName() string
+	New(fields Fields) interface{}
+}
+
 type FieldsProvider interface {
 	Fields() Fields
 }
