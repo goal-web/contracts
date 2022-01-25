@@ -187,8 +187,8 @@ type QueryBuilder interface {
 
 	Delete() int64
 
-	Paginate(perPage int64, current ...int64) (interface{}, int64)
-	SimplePaginate(perPage int64, current ...int64) interface{}
+	Paginate(perPage int64, current ...int64) (Collection, int64)
+	SimplePaginate(perPage int64, current ...int64) Collection
 
 	Bind(QueryBuilder) QueryBuilder
 }

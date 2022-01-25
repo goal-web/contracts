@@ -10,6 +10,10 @@ type FieldsProvider interface {
 	Fields() Fields
 }
 
+type Json interface {
+	ToJson() string
+}
+
 type Getter interface {
 	GetString(key string) string
 	GetInt64(key string) int64
@@ -31,6 +35,7 @@ type OptionalGetter interface {
 }
 
 type Collection interface {
+	Json
 	// sort
 
 	sort.Interface
