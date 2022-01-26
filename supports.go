@@ -7,11 +7,16 @@ import (
 
 type Fields map[string]interface{}
 
-type Class interface {
+type Interface interface {
 	reflect.Type
 
 	// ClassName 获取类名
 	ClassName() string
+}
+
+type Class interface {
+	Interface
+
 	// New 通过 Fields
 	New(fields Fields) interface{}
 }
