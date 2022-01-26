@@ -12,7 +12,7 @@ type Class interface {
 
 	// ClassName 获取类名
 	ClassName() string
-	// New 通过 Fields 创建一个实例
+	// New 通过 Fields
 	New(fields Fields) interface{}
 }
 
