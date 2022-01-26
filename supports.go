@@ -1,13 +1,20 @@
 package contracts
 
 import (
+	"reflect"
 	"sort"
 )
 
 type Fields map[string]interface{}
 
 type Class interface {
+	reflect.Type
+
+	// IsImplements 判断是否实现了某个类
+	IsImplements(p reflect.Type) bool
+	// ClassName 获取类名
 	ClassName() string
+	// New 通过 Fields 创建一个实例
 	New(fields Fields) interface{}
 }
 
