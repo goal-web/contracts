@@ -10,6 +10,8 @@ type Fields map[string]interface{}
 type Interface interface {
 	reflect.Type
 
+	IsSubClass(class interface{}) bool
+
 	// ClassName 获取类名
 	ClassName() string
 }

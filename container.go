@@ -18,12 +18,7 @@ type Container interface {
 
 // Component 可注入的类
 type Component interface {
-	ShouldInject()
-}
-
-// Injectable 可注入类型
-type Injectable interface {
-	Call(container Container)
+	Construct(container Container)
 }
 
 // MagicalFunc 可以通过容器调用的魔术方法
