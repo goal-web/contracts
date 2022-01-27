@@ -74,7 +74,7 @@ const (
 )
 
 type QueryBuilder interface {
-	Select(column string, columns ...string) QueryBuilder
+	Select(columns ...string) QueryBuilder
 	AddSelect(columns ...string) QueryBuilder
 	SelectSub(provider QueryProvider, as string) QueryBuilder
 	AddSelectSub(provider QueryProvider, as string) QueryBuilder
@@ -141,6 +141,7 @@ type QueryBuilder interface {
 
 	OrderBy(column string, columnOrderType ...OrderType) QueryBuilder
 	OrderByDesc(column string) QueryBuilder
+	InRandomOrder() QueryBuilder
 
 	When(condition bool, callback QueryCallback, elseCallback ...QueryCallback) QueryBuilder
 
