@@ -13,6 +13,7 @@ type Container interface {
 	Flush()
 	Get(key string, args ...interface{}) interface{}
 	Call(fn interface{}, args ...interface{}) []interface{}
+	StaticCall(fn MagicalFunc, args ...interface{}) []interface{}
 	DI(object interface{}, args ...interface{})
 }
 
