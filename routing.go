@@ -16,6 +16,7 @@ type RouteGroup interface {
 	Options(path string, handler interface{}, middlewares ...interface{}) RouteGroup
 	Trace(path string, handler interface{}, middlewares ...interface{}) RouteGroup
 	Middlewares() []interface{}
+	Group(prefix string, middlewares ...interface{}) RouteGroup
 	Routes() []Route
 }
 
