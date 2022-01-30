@@ -1,7 +1,7 @@
 package contracts
 
 type Route interface {
-	Middlewares() []interface{}
+	Middlewares() []MagicalFunc
 	Method() []string
 	Path() string
 	Handler() MagicalFunc
@@ -15,7 +15,7 @@ type RouteGroup interface {
 	Patch(path string, handler interface{}, middlewares ...interface{}) RouteGroup
 	Options(path string, handler interface{}, middlewares ...interface{}) RouteGroup
 	Trace(path string, handler interface{}, middlewares ...interface{}) RouteGroup
-	Middlewares() []interface{}
+	Middlewares() []MagicalFunc
 	Group(prefix string, middlewares ...interface{}) RouteGroup
 	Routes() []Route
 }
