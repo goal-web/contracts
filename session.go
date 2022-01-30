@@ -25,3 +25,8 @@ type Session interface {
 	PreviousUrl() string
 	SetPreviousUrl(url string)
 }
+
+type SessionStore interface {
+	LoadSession() map[string]string
+	Save(map[string]string)
+}
