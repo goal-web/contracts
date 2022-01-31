@@ -27,6 +27,6 @@ type Session interface {
 }
 
 type SessionStore interface {
-	LoadSession() map[string]string
-	Save(map[string]string)
+	LoadSession(id string) map[string]string
+	Save(id string, sessions map[string]string)
 }
