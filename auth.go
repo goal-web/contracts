@@ -1,6 +1,6 @@
 package contracts
 
-type GuardDriver func(config Fields, ctx Context, provider UserProvider) Guard
+type GuardDriver func(name string, config Fields, ctx Context, provider UserProvider) Guard
 type UserProviderDriver func(config Fields) UserProvider
 
 type Auth interface {
