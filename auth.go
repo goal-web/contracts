@@ -1,35 +1,30 @@
 package contracts
 
-type GuardProvider func(config Fields) Guard
-type UserProviderProvider func(config Fields) UserProvider
+type GuardDriver func(config Fields, ctx Context, provider UserProvider) Guard
+type UserProviderDriver func(config Fields) UserProvider
 
 type Auth interface {
-	Guard
+	ExtendUserProvider(name string, provider UserProviderDriver)
+	ExtendGuard(name string, guard GuardDriver)
 
-	ExtendUserProvider(key string, provider UserProviderProvider)
-	ExtendGuard(key string, guard GuardProvider)
-
-	Guard(key string) Guard
-	UserProvider(key string) UserProvider
+	Guard(name string, ctx Context) Guard
+	UserProvider(name string) UserProvider
 }
 
-type Authorizable interface {
-	Id() string
+type Authenticatable interface {
+	GetId() string
 }
 
 type Guard interface {
-	Once(authorizable Authorizable)
-	User() Authorizable
-	Id() string
+	Once(user Authenticatable)
+	User() Authenticatable
+	GetId() string
 	Check() bool
 	Guest() bool
 	Validate(credentials Fields) bool
+	Login(user Authenticatable) interface{}
 }
 
 type UserProvider interface {
-	RetrieveById(identifier string) Authorizable
-
-	RetrieveByCredentials(credentials Fields) Authorizable
-
-	ValidateCredentials(user Authorizable, credentials Fields) bool
+	RetrieveById(identifier string) Authenticatable
 }

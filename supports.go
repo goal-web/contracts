@@ -5,6 +5,14 @@ import (
 	"sort"
 )
 
+type Context interface {
+	// Get retrieves data from the context.
+	Get(key string) interface{}
+
+	// Set saves data in the context.
+	Set(key string, val interface{})
+}
+
 type Fields map[string]interface{}
 
 type Interface interface {

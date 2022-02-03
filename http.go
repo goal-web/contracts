@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-type Context interface {
+type HttpContext interface {
 	// Request returns `*http.Request`.
 	Request() *http.Request
 
@@ -89,7 +89,7 @@ type Context interface {
 	// does it based on Content-Type header.
 	Bind(i interface{}) error
 
-	// Validate validates provided `i`. It is usually called after `Context#Bind()`.
+	// Validate validates provided `i`. It is usually called after `HttpContext#Bind()`.
 	// Validator must be registered using `Echo#Validator`.
 	Validate(i interface{}) error
 
@@ -165,7 +165,7 @@ type Context interface {
 
 type HttpResponse interface {
 	Status() int
-	Response(ctx Context) error
+	Response(ctx HttpContext) error
 }
 
 type HttpRequest interface {
@@ -253,7 +253,7 @@ type HttpRequest interface {
 	// does it based on Content-Type header.
 	Bind(i interface{}) error
 
-	// Validate validates provided `i`. It is usually called after `Context#Bind()`.
+	// Validate validates provided `i`. It is usually called after `HttpContext#Bind()`.
 	// Validator must be registered using `Echo#Validator`.
 	Validate(i interface{}) error
 

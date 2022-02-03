@@ -198,4 +198,5 @@ type Model interface {
 	GetClass() Class
 	GetTable() string
 	GetConnection() string
+	GetPrimaryKey() string
 }
