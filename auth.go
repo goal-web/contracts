@@ -21,7 +21,6 @@ type Guard interface {
 	GetId() string
 	Check() bool
 	Guest() bool
-	Validate(credentials Fields) bool
 	Login(user Authenticatable) interface{}
 }
 
