@@ -37,7 +37,7 @@ type Queue interface {
 	// SetConnectionName Set the connection name for the queue.
 	SetConnectionName(queue string) Queue
 
-	Work() error
+	Listen() chan Job
 
 	Stop()
 }
@@ -118,6 +118,10 @@ type Job interface {
 
 	// GetRawBody Get the raw body string for the job.
 	GetRawBody() string
+}
+
+type QueueWorker interface {
+	Work(queue Queue)
 }
 
 type ShouldQueue interface {
