@@ -17,6 +17,7 @@ type Fields map[string]interface{}
 
 type Interface interface {
 	reflect.Type
+	GetType() reflect.Type
 
 	IsSubClass(class interface{}) bool
 
