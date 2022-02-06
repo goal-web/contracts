@@ -100,14 +100,8 @@ type Job interface {
 	// IncrementAttemptsNum increase the number of attempts
 	IncrementAttemptsNum()
 
-	// MaxExceptions Get the maximum number of exceptions allowed, regardless of attempts.
-	MaxExceptions() int
-
-	// Timeout Get the number of seconds the job can run.
-	Timeout() int
-
-	// RetryUntil Get the timestamp indicating when the job should timeout.
-	RetryUntil() int
+	// GetTimeout Get the number of seconds the job can run.
+	GetTimeout() int
 
 	// GetConnectionName Get the name of the connection the job belongs to.
 	GetConnectionName() string
