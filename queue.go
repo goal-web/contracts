@@ -4,6 +4,7 @@ import "time"
 
 type QueueFactory interface {
 	Connection(name ...string) Queue
+	Extend(string, QueueDriver)
 }
 
 type Msg struct {
@@ -17,19 +18,19 @@ type QueueDriver func(name string, config Fields, serializer JobSerializer) Queu
 
 type Queue interface {
 	// Push a new job onto the queue.
-	Push(job Job, queue ...string)
+	Push(job Job, queue ...string) error
 
 	// PushOn Push a new job onto the queue.
-	PushOn(queue string, job Job)
+	PushOn(queue string, job Job) error
 
 	// PushRaw Push a raw payload onto the queue.
 	PushRaw(payload, queue string, options ...Fields) error
 
 	// Later Push a new job onto the queue after a delay.
-	Later(delay time.Time, job Job, queue ...string)
+	Later(delay time.Time, job Job, queue ...string) error
 
 	// LaterOn Push a new job onto the queue after a delay.
-	LaterOn(queue string, delay time.Time, job Job)
+	LaterOn(queue string, delay time.Time, job Job) error
 
 	// GetConnectionName Get the connection name for the queue.
 	GetConnectionName() string
@@ -39,10 +40,7 @@ type Queue interface {
 	 * Release the job back into the queue.
 	 * Accepts a delay specified in seconds.
 	 */
-	Release(job Job, delay ...int)
-
-	// Delete the job from the queue.
-	Delete(job Job)
+	Release(job Job, delay ...int) error
 
 	Listen(queue ...string) chan Msg
 
@@ -83,6 +81,9 @@ type Job interface {
 
 	// GetMaxTries Get the max number of times to attempt a job.
 	GetMaxTries() int
+
+	// GetRetryInterval Get the interval between retry interval tasks, in seconds
+	GetRetryInterval() int
 
 	// GetAttemptsNum Get the number of times to attempt a job.
 	GetAttemptsNum() int
