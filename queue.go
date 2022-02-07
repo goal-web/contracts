@@ -1,5 +1,7 @@
 package contracts
 
+import "time"
+
 type QueueFactory interface {
 	Connection(name ...string) Queue
 }
@@ -24,25 +26,16 @@ type Queue interface {
 	PushOn(queue string, job Job)
 
 	// PushRaw Push a raw payload onto the queue.
-	PushRaw(payload, queue string, options ...Fields)
+	PushRaw(payload, queue string, options ...Fields) error
 
 	// Later Push a new job onto the queue after a delay.
-	Later(delay interface{}, job Job, queue ...string)
+	Later(delay time.Time, job Job, queue ...string)
 
 	// LaterOn Push a new job onto the queue after a delay.
-	LaterOn(queue string, delay interface{}, job Job)
-
-	// Bulk Push an array of jobs onto the queue.
-	Bulk(job Job, queue ...string)
-
-	// Pop the next job off of the queue.
-	Pop(queue ...string) Job
+	LaterOn(queue string, delay time.Time, job Job)
 
 	// GetConnectionName Get the connection name for the queue.
 	GetConnectionName() string
-
-	// SetConnectionName Set the connection name for the queue.
-	SetConnectionName(queue string) Queue
 
 	// Release
 	/**
