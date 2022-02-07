@@ -16,9 +16,6 @@ type Ack func()
 type QueueDriver func(name string, config Fields, serializer JobSerializer) Queue
 
 type Queue interface {
-	// Size Get the size of the queue.
-	Size() int64
-
 	// Push a new job onto the queue.
 	Push(job Job, queue ...string)
 
@@ -101,6 +98,8 @@ type Job interface {
 
 	// GetQueue Get the name of the queue the job belongs to.
 	GetQueue() string
+
+	SetQueue(queue string)
 }
 
 type QueueWorker interface {
