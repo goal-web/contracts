@@ -12,19 +12,39 @@ type Auth interface {
 }
 
 type Authenticatable interface {
+	// GetId 获取当前已认证用户的 ID
+	// Get the ID for the currently authenticated user.
 	GetId() string
 }
 
 type Guard interface {
+	// Once 设置当前用户
+	// Set the current user.
 	Once(user Authenticatable)
+
+	// User 获取当前认证的用户
+	// Get the currently authenticated user.
 	User() Authenticatable
+
+	// GetId 获取当前已认证用户的 ID
+	// Get the ID for the currently authenticated user.
 	GetId() string
+
+	// Check 判断当前用户是否经过身份验证
+	// Determine if the current user is authenticated.
 	Check() bool
+
+	// Guest 判断当前用户是否为访客
+	// Determine if the current user is a guest.
 	Guest() bool
+
+
 	Login(user Authenticatable) interface{}
 }
 
 type UserProvider interface {
+	// RetrieveById 通过用户的唯一标识符检索用户
+	// Retrieve a user by their unique identifier.
 	RetrieveById(identifier string) Authenticatable
 }
 
