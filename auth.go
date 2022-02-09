@@ -55,7 +55,8 @@ type Authorizable interface {
 	Can(ability string, arguments ...interface{}) bool
 }
 
-type GateChecker func(user Authorizable, data interface{}) bool
+type GateChecker func(user Authorizable, data ...interface{}) bool
+type GateHook func(user Authorizable, ability string, data ...interface{}) bool
 
 type Policy map[string]GateChecker
 
@@ -85,10 +86,6 @@ type Gate interface {
 	// the user for the given ability.
 	Inspect(ability string, arguments ...interface{}) HttpResponse
 
-	// Raw 从授权回调中获取原始结果
-	// Get the raw result from the authorization callback.
-	Raw(ability string, arguments ...interface{}) interface{}
-
 	// ForUser 获取给定用户的警卫实例
 	// Get a guard instance for the given user.
 	ForUser(user Authorizable) Gate
@@ -104,10 +101,6 @@ type GateFactory interface {
 	// a new ability.
 	Define(ability string, callback GateChecker) GateFactory
 
-	// Resource  定义资源的能力
-	// define abilities for a resource.
-	Resource(name string, class Class, abilities ...string) GateFactory
-
 	// Policy 为给定的类类型定义一个策略类
 	// define a policy class for a given class type.
 	Policy(class Class, policy Policy) GateFactory
@@ -119,6 +112,10 @@ type GateFactory interface {
 	// After 注册回调以在所有 Gate 检查后运行
 	// Register a callback to run after all Gate checks.
 	After(callable GateChecker) GateFactory
+
+	// Check 确定是否应为当前用户授予所有给定的能力
+	// Determine if all the given abilities should be granted for the current user.
+	Check(user Authorizable, ability string, arguments ...interface{}) bool
 
 	// Abilities 获得所有已定义的能力
 	// Get all the defined abilities.
