@@ -38,7 +38,8 @@ type Guard interface {
 	// Determine if the current user is a guest.
 	Guest() bool
 
-
+	// Login 将用户登录到应用程序
+	// Log a user into the application.
 	Login(user Authenticatable) interface{}
 }
 
@@ -49,6 +50,8 @@ type UserProvider interface {
 }
 
 type Authorizable interface {
+	// Can 确定实体是否具有给定的能力
+	// Determine if the entity has a given ability.
 	Can(ability string, arguments ...interface{}) bool
 }
 
@@ -58,51 +61,66 @@ type Policy map[string]GateChecker
 
 type Gate interface {
 
-	// Allows determined if the given ability should be granted for the current user.
+	// Allows 确定是否应该为当前用户授予给定的能力
+	// determined if the given ability should be granted for the current user.
 	Allows(ability string, arguments ...interface{}) bool
 
-	// Denies Determine if the given ability should be denied for the current user.
+	// Denies 确定是否应该为当前用户拒绝给定的能力
+	// Determine if the given ability should be denied for the current user.
 	Denies(ability string, arguments ...interface{}) bool
 
-	// Check Determine if all the given abilities should be granted for the current user.
+	// Check 确定是否应为当前用户授予所有给定的能力
+	// Determine if all the given abilities should be granted for the current user.
 	Check(abilities []string, arguments ...interface{}) bool
 
-	// Any Determine if any one of the given abilities should be granted for the current user.
+	// Any 确定是否应为当前用户授予任何一种给定能力
+	// Determine if any one of the given abilities should be granted for the current user.
 	Any(abilities []string, arguments ...interface{}) bool
 
-	// Authorize Determine if the given ability should be granted for the current user.
+	// Authorize 确定是否应该为当前用户授予给定的能力
+	// Determine if the given ability should be granted for the current user.
 	Authorize(ability string, arguments ...interface{})
 
-	// Inspect the user for the given ability.
+	// Inspect 给定能力的用户
+	// the user for the given ability.
 	Inspect(ability string, arguments ...interface{}) HttpResponse
 
-	// Raw Get the raw result from the authorization callback.
+	// Raw 从授权回调中获取原始结果
+	// Get the raw result from the authorization callback.
 	Raw(ability string, arguments ...interface{}) interface{}
 
-	// ForUser Get a guard instance for the given user.
+	// ForUser 获取给定用户的警卫实例
+	// Get a guard instance for the given user.
 	ForUser(user Authorizable) Gate
 }
 
 type GateFactory interface {
 
-	// Has determined if a given ability has been defined.
+	// Has 确定是否已定义给定的能力
+	// determined if a given ability has been defined.
 	Has(ability string) bool
 
-	// Define a new ability.
+	// Define 一种新的能力
+	// a new ability.
 	Define(ability string, callback GateChecker) GateFactory
 
-	// Resource define abilities for a resource.
+	// Resource  定义资源的能力
+	// define abilities for a resource.
 	Resource(name string, class Class, abilities ...string) GateFactory
 
-	// Policy define a policy class for a given class type.
+	// Policy 为给定的类类型定义一个策略类
+	// define a policy class for a given class type.
 	Policy(class Class, policy Policy) GateFactory
 
-	// Before Register a callback to run before all Gate checks.
+	// Before 注册一个回调以在所有 Gate 检查之前运行
+	// Register a callback to run before all Gate checks.
 	Before(callable GateChecker) GateFactory
 
-	// After Register a callback to run after all Gate checks.
+	// After 注册回调以在所有 Gate 检查后运行
+	// Register a callback to run after all Gate checks.
 	After(callable GateChecker) GateFactory
 
-	// Abilities Get all the defined abilities.
+	// Abilities 获得所有已定义的能力
+	// Get all the defined abilities.
 	Abilities() []string
 }
