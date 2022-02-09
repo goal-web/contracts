@@ -1,13 +1,29 @@
 package contracts
 
+// GuardDriver 守卫驱动程序
+// guard driver
 type GuardDriver func(name string, config Fields, ctx Context, provider UserProvider) Guard
+
+// UserProviderDriver 用户提供者驱动程序
+// User Provider Driver
 type UserProviderDriver func(config Fields) UserProvider
 
 type Auth interface {
+
+	// ExtendUserProvider 扩展用户提供者
+	// Extended User Provider.
 	ExtendUserProvider(name string, provider UserProviderDriver)
+
+	// ExtendGuard 扩展守卫
+	// Extended guard.
 	ExtendGuard(name string, guard GuardDriver)
 
+	// Guard 按名称获取守卫实例
+	// Get a guard instance by name.
 	Guard(name string, ctx Context) Guard
+
+	// UserProvider 按名称获取用户提供者实例
+	// Get a user provider instance by name.
 	UserProvider(name string) UserProvider
 }
 
@@ -55,9 +71,16 @@ type Authorizable interface {
 	Can(ability string, arguments ...interface{}) bool
 }
 
+// GateChecker 权限检查器
+// permission checker.
 type GateChecker func(user Authorizable, data ...interface{}) bool
+
+// GateHook 权限钩子
+// permission hook.
 type GateHook func(user Authorizable, ability string, data ...interface{}) bool
 
+// Policy 权限策略, 一组检查器
+// Permission policy, a set of checkers.
 type Policy map[string]GateChecker
 
 type Gate interface {
