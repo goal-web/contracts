@@ -32,7 +32,8 @@ type Authorizable interface {
 	Can(ability string, arguments ...interface{}) bool
 }
 
-type GateChecker func(user Authorizable, data interface{}) bool
+type GateChecker func(user Authorizable, data ...interface{}) bool
+type GateHook func(user Authorizable, ability string, data ...interface{}) bool
 
 type Policy map[string]GateChecker
 
@@ -56,9 +57,6 @@ type Gate interface {
 	// Inspect the user for the given ability.
 	Inspect(ability string, arguments ...interface{}) HttpResponse
 
-	// Raw Get the raw result from the authorization callback.
-	Raw(ability string, arguments ...interface{}) interface{}
-
 	// ForUser Get a guard instance for the given user.
 	ForUser(user Authorizable) Gate
 }
@@ -71,17 +69,16 @@ type GateFactory interface {
 	// Define a new ability.
 	Define(ability string, callback GateChecker) GateFactory
 
-	// Resource define abilities for a resource.
-	Resource(name string, class Class, abilities ...string) GateFactory
-
 	// Policy define a policy class for a given class type.
 	Policy(class Class, policy Policy) GateFactory
 
 	// Before Register a callback to run before all Gate checks.
-	Before(callable GateChecker) GateFactory
+	Before(callable GateHook) GateFactory
 
 	// After Register a callback to run after all Gate checks.
-	After(callable GateChecker) GateFactory
+	After(callable GateHook) GateFactory
+
+	Check(user Authorizable, ability string, arguments ...interface{}) bool
 
 	// Abilities Get all the defined abilities.
 	Abilities() []string
