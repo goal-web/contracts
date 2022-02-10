@@ -30,6 +30,8 @@ type Class interface {
 
 	// New 通过 Fields
 	New(fields Fields) interface{}
+
+	NewByTag(fields Fields, tag string) interface{}
 }
 
 type FieldsProvider interface {
