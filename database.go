@@ -158,6 +158,7 @@ type QueryBuilder interface {
 	ChunkById(size int, handler func(collection Collection, page int) error) error
 
 	SelectSql() (string, []interface{})
+	SelectForUpdateSql() (string, []interface{})
 	CreateSql(value Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
 	InsertSql(values []Fields, insertType2 ...InsertType) (sql string, bindings []interface{})
 	InsertIgnoreSql(values []Fields) (sql string, bindings []interface{})
@@ -180,6 +181,7 @@ type QueryBuilder interface {
 	UpdateOrCreate(attributes Fields, values ...Fields) interface{}
 
 	Get() Collection
+	SelectForUpdate() Collection
 	Find(key interface{}) interface{}
 	First() interface{}
 	FirstOr(provider InstanceProvider) interface{}
