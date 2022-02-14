@@ -3,9 +3,20 @@ package contracts
 import "time"
 
 type Console interface {
+	// Call 按名称运行 控制台命令
+	// run  console command by name.
 	Call(command string, arguments CommandArguments) interface{}
+
+	// Run 运行传入的控制台命令
+	// run an incoming console command.
 	Run(input ConsoleInput) interface{}
+
+	// Schedule 注册任务调度
+	// register Task Scheduler.
 	Schedule(schedule Schedule)
+
+	// GetSchedule 获取任务调度
+	// get task schedule.
 	GetSchedule() Schedule
 }
 
