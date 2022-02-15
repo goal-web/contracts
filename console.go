@@ -7,7 +7,10 @@ type Console interface {
 	Run(input ConsoleInput) interface{}
 	Schedule(schedule Schedule)
 	GetSchedule() Schedule
+	RegisterCommand(name string, command CommandProvider)
 }
+
+type CommandProvider func(application Application) Command
 
 type Command interface {
 	Handle() interface{}
@@ -54,8 +57,8 @@ type ScheduleEvent interface {
 	MutexName() string
 	SetMutexName(mutexName string) ScheduleEvent
 
-	Skip(func() bool) ScheduleEvent
-	When(func() bool) ScheduleEvent
+	Skip(callback func() bool) ScheduleEvent
+	When(callback func() bool) ScheduleEvent
 
 	SpliceIntoPosition(position int, value string) ScheduleEvent
 

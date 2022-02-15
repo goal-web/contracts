@@ -1,5 +1,7 @@
 package contracts
 
+import "time"
+
 type DBConnector func(config Fields, dispatcher EventDispatcher) DBConnection
 
 type Result interface {
@@ -202,3 +204,15 @@ type Model interface {
 	GetConnection() string
 	GetPrimaryKey() string
 }
+
+type MigrateHandler func(db DBConnection) error
+
+type Migrate struct {
+	Name       string
+	Connection string
+	CreatedAt  time.Time
+	Up         MigrateHandler
+	Down       MigrateHandler
+}
+
+type Migrations []Migrate
