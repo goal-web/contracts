@@ -1,34 +1,71 @@
 package contracts
 
+// DBConnector 获取数据库连接实例
+// Get a database connection instance.
 type DBConnector func(config Fields, dispatcher EventDispatcher) DBConnection
 
 type Result interface {
+	// LastInsertId 获取最后一个插入 ID
+	// Get the last insert ID.
 	LastInsertId() (int64, error)
+
+	// RowsAffected 获取受影响的行数
+	// Get the number of affected rows.
 	RowsAffected() (int64, error)
 }
 
 type DBFactory interface {
+	// Connection 获取指定的数据库连接实例
+	// Get the specified database connection instance.
 	Connection(key ...string) DBConnection
+
+	// Extend 注册扩展数据库连接实例
+	// Register an extension database connection resolver.
 	Extend(name string, driver DBConnector)
 }
 
 type DBTx interface {
 	SqlExecutor
+	// Commit 提交活动的数据库事务
+	// commit the active database transaction.
 	Commit() error
+
+	// Rollback 回滚活动的数据库事务
+	// rollback the active database transaction.
 	Rollback() error
 }
 
 type SqlExecutor interface {
+	// Query 对连接执行新查询
+	// Execute a new query against the connection.
 	Query(query string, args ...interface{}) (Collection, error)
+
+	// Get 将查询作为“select”语句执行。
+	// Execute the query as a "select" statement.
 	Get(dest interface{}, query string, args ...interface{}) error
+
+	// Select 对数据库运行 select 语句
+	// Run a select statement against the database.
 	Select(dest interface{}, query string, args ...interface{}) error
+
+	// Exec 执行一条 SQL 语句
+	// Execute an SQL statement.
 	Exec(query string, args ...interface{}) (Result, error)
 }
 
 type DBConnection interface {
 	SqlExecutor
+
+	// Begin 开始一个新的数据库事务。
+	// Start a new database transaction.
 	Begin() (DBTx, error)
+
+	// Transaction 在事务中执行闭包
+	// Execute a Closure within a transaction.
 	Transaction(func(executor SqlExecutor) error) error
+
+	// DriverName 获取驱动程序名称
+	// Get the driver name.
 	DriverName() string
 }
 
