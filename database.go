@@ -1,5 +1,8 @@
 package contracts
 
+
+import "time"
+
 // DBConnector 获取数据库连接实例
 // Get a database connection instance.
 type DBConnector func(config Fields, dispatcher EventDispatcher) DBConnection
@@ -239,3 +242,15 @@ type Model interface {
 	GetConnection() string
 	GetPrimaryKey() string
 }
+
+type MigrateHandler func(db DBConnection) error
+
+type Migrate struct {
+	Name       string
+	Connection string
+	CreatedAt  time.Time
+	Up         MigrateHandler
+	Down       MigrateHandler
+}
+
+type Migrations []Migrate
