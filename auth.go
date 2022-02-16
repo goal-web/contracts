@@ -130,11 +130,11 @@ type GateFactory interface {
 
 	// Before 注册一个回调以在所有 Gate 检查之前运行
 	// Register a callback to run before all Gate checks.
-	Before(callable GateChecker) GateFactory
+	Before(callable GateHook) GateFactory
 
 	// After 注册回调以在所有 Gate 检查后运行
 	// Register a callback to run after all Gate checks.
-	After(callable GateChecker) GateFactory
+	After(callable GateHook) GateFactory
 
 	// Check 确定是否应为当前用户授予所有给定的能力
 	// Determine if all the given abilities should be granted for the current user.
