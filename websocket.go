@@ -4,6 +4,9 @@ type WebSocket interface {
 	// Add 添加一个连接，返回 fd
 	Add(connect WebSocketConnection)
 
+	// GetFd 获取新的 fd
+	GetFd() uint64
+
 	// Close 关闭指定连接
 	Close(fd uint64) error
 
@@ -14,8 +17,6 @@ type WebSocket interface {
 type WebSocketConnection interface {
 	WebSocketSender
 
-	// SetFd 设置 fd
-	SetFd(fd uint64)
 	// Fd 获取 fd
 	Fd() uint64
 	// Close 关闭该连接
@@ -50,8 +51,10 @@ type WebSocketFrame interface {
 
 type WebSocketController interface {
 	// OnConnect 可以在连接时处理一些鉴权之类的操作
-	OnConnect(request HttpRequest) error
+	OnConnect(request HttpRequest, fd uint64) error
 
 	// OnMessage 当有新的消息来时执行的操作
 	OnMessage(frame WebSocketFrame)
+
+	OnClose(fd uint64)
 }
