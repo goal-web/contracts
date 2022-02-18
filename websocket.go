@@ -56,5 +56,6 @@ type WebSocketController interface {
 	// OnMessage 当有新的消息来时执行的操作
 	OnMessage(frame WebSocketFrame)
 
+	// OnClose 处理关闭事件
 	OnClose(fd uint64)
 }

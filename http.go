@@ -326,3 +326,34 @@ type HttpRequest interface {
 	// See `Echo#ServeHTTP()`
 	Reset(r *http.Request, w http.ResponseWriter)
 }
+
+type Sse interface {
+	// Add 添加一个连接，返回 fd
+	Add(connect SseConnection)
+
+	// GetFd 获取新的 fd
+	GetFd() uint64
+
+	Close(fd uint64) error
+
+	// Send 发送消息给指定 fd 的连接
+	Send(fd uint64, message interface{}) error
+}
+
+type SseConnection interface {
+	// Fd 获取连接标识
+	Fd() uint64
+
+	// Send 发送消息给该连接
+	Send(message interface{}) error
+
+	Close() error
+}
+
+type SseController interface {
+	// OnConnect 可以在连接时处理一些鉴权之类的操作
+	OnConnect(request HttpRequest, fd uint64) error
+
+	// OnClose 处理关闭事件
+	OnClose(fd uint64)
+}
