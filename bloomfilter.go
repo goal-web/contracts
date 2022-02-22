@@ -9,7 +9,7 @@ type BloomFactory interface {
 	Close()
 }
 
-type BloomFilterDriver func(config Fields) BloomFilter
+type BloomFilterDriver func(name string, config Fields) BloomFilter
 
 type BloomFilter interface {
 	Add(bytes []byte)

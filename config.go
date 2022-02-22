@@ -1,5 +1,7 @@
 package contracts
 
+type ConfigProvider func(env Env) interface{}
+
 type Config interface {
 	Getter
 	FieldsProvider
@@ -7,6 +9,10 @@ type Config interface {
 	// Load 根据给定的字段提供者加载配置
 	// load configuration based on given field provider.
 	Load(provider FieldsProvider)
+
+	// Reload 根据给定的字段提供者加载配置
+	// reload configuration based on given field provider.
+	Reload()
 
 	// Merge 合并给定的配置值
 	// merge the given configuration values.
