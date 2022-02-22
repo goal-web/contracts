@@ -8,11 +8,12 @@ import (
 
 type FileVisibility int
 
-type FileSystemProvider func(config Fields) FileSystem
+type FileSystemProvider func(name string, config Fields) FileSystem
 
 type File interface {
 	fs.FileInfo
-	Get() string
+	Read() []byte
+	ReadString() string
 	Disk() string
 }
 
@@ -29,6 +30,7 @@ type FileSystem interface {
 	Exists(path string) bool
 
 	Get(path string) (string, error)
+	Read(path string) ([]byte, error)
 	ReadStream(path string) (*bufio.Reader, error)
 
 	Put(path, contents string) error
