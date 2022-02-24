@@ -170,6 +170,7 @@ type HttpResponse interface {
 
 type HttpRequest interface {
 	Getter
+	OptionalGetter
 	FieldsProvider
 
 	// Only 只获取指定 key 的数据
