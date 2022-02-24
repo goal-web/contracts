@@ -172,6 +172,12 @@ type HttpRequest interface {
 	Getter
 	FieldsProvider
 
+	// Only 只获取指定 key 的数据
+	Only(keys ...string) Fields
+
+	// OnlyExists 只获取指定 key ，不存在或者 nil 则忽略
+	OnlyExists(keys ...string) Fields
+
 	// Request returns `*http.Request`.
 	Request() *http.Request
 
@@ -328,7 +334,7 @@ type HttpRequest interface {
 }
 
 type Sse interface {
-	// Add 添加一个连接，返回 fd
+	// Add 添加一个连接
 	Add(connect SseConnection)
 
 	// GetFd 获取新的 fd
