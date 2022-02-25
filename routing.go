@@ -18,6 +18,7 @@ type RouteGroup interface {
 	Middlewares() []MagicalFunc
 	Group(prefix string, middlewares ...interface{}) RouteGroup
 	Routes() []Route
+	Groups() []RouteGroup
 }
 
 type Router interface {
