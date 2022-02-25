@@ -124,6 +124,7 @@ type Schedule interface {
 	// Add a new command event to the schedule.
 	Exec(command string, args ...string) CommandEvent
 
+
 	// GetEvents 获取计划中的所有事件
 	// Get all the events on the schedule.
 	GetEvents() []ScheduleEvent
@@ -150,6 +151,7 @@ type ScheduleEvent interface {
 	// Set the mutex name for the scheduled command.
 	SetMutexName(mutexName string) ScheduleEvent
 
+
 	// Skip 注册回调以进一步过滤计划, 返回true时跳过
 	// Register a callback to further filter the schedule, skip when returning true.
 	Skip(callback func() bool) ScheduleEvent
@@ -158,9 +160,11 @@ type ScheduleEvent interface {
 	// Register a callback to further filter the schedule, Do not skip when returning true.
 	When(callback func() bool) ScheduleEvent
 
+
 	// SpliceIntoPosition 将给定值拼接到表达式的给定位置
 	// Splice the given value into the given position of the expression.
 	SpliceIntoPosition(position int, value string) ScheduleEvent
+
 
 	// Expression 获取事件的 cron 表达式
 	// Get the cron expression for the event.
@@ -333,6 +337,7 @@ type ScheduleEvent interface {
 	// Between 安排事件在开始时间和结束时间之间运行
 	// schedule the event to run between start and end time.
 	Between(startTime, endTime string) ScheduleEvent
+
 
 	// EveryThirtySeconds 安排活动每30秒运行一次
 	// schedule the event to run every 30 seconds.
