@@ -1,6 +1,8 @@
 package contracts
 
 type Route interface {
+	// Middlewares
+	// Get the middlewares attached to the route.
 	Middlewares() []MagicalFunc
 	Method() []string
 	Path() string
