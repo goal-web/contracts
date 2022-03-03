@@ -18,6 +18,7 @@ type Auth interface {
 	// Extended guard.
 	ExtendGuard(name string, guard GuardDriver)
 
+
 	// Guard 按名称获取守卫实例
 	// Get a guard instance by name.
 	Guard(name string, ctx Context) Guard

@@ -5,6 +5,8 @@ import (
 )
 
 type RedisFactory interface {
+	// Connection 解析一个redis连接实例
+	// Resolve a redis connection instance.
 	Connection(name ...string) RedisConnection
 }
 
@@ -53,11 +55,21 @@ type ZRangeBy struct {
 	Offset, Count int64
 }
 
+// RedisSubscribeFunc 订阅给定的消息频道
+// Subscribe to a given message channel.
 type RedisSubscribeFunc func(message, channel string)
 
 type RedisConnection interface {
+	// Subscribe 订阅一组给定的消息频道
+	// subscribe to a set of given channels for messages.
 	Subscribe(channels []string, closure RedisSubscribeFunc)
+
+	// PSubscribe 使用通配符订阅一组给定频道
+	// subscribe to a set of given channels with wildcards.
 	PSubscribe(channels []string, closure RedisSubscribeFunc)
+
+	// Command 对 Redis 数据库运行命令
+	// Run a command against the Redis database.
 	Command(method string, args ...interface{}) (interface{}, error)
 
 	PubSubChannels(pattern string) ([]string, error)
@@ -68,11 +80,17 @@ type RedisConnection interface {
 
 	Publish(channel string, message interface{}) (int64, error)
 
-	// getter start
+
+	// Get 返回给定键的值
+	// Returns the value of the given key.
 	Get(key string) (string, error)
 
+	// MGet 获取所有给定键的值
+	// get the values of all the given keys.
 	MGet(keys ...string) ([]interface{}, error)
 
+	// GetBit 对 key 所储存的字符串值，对获取指定偏移量上的位(bit)
+	// For the string value stored in key, get the bit at the specified offset.
 	GetBit(key string, offset int64) (int64, error)
 
 	BitOpAnd(destKey string, keys ...string) (int64, error)
