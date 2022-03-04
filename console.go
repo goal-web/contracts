@@ -18,6 +18,11 @@ type Console interface {
 	// GetSchedule 获取任务调度
 	// get task schedule.
 	GetSchedule() Schedule
+
+	// Exists 判断是否注册某命令
+	Exists(name string) bool
+
+	// RegisterCommand 注册命令
 	RegisterCommand(name string, command CommandProvider)
 }
 
