@@ -22,10 +22,13 @@ type Console interface {
 	// Exists 判断是否注册某命令
 	Exists(name string) bool
 
-	// RegisterCommand 注册命令
+	// RegisterCommand 注册给定的控制台命令
+	// Register the given commands.
 	RegisterCommand(name string, command CommandProvider)
 }
 
+// CommandProvider 命令提供者
+// command provider.
 type CommandProvider func(application Application) Command
 
 type Command interface {
