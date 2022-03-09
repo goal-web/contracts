@@ -496,86 +496,163 @@ type RedisConnection interface {
 	// Insert value at the head of the list below the key only if the key already exists and a list exists. Contrary to LPUSH, no operation is performed when the key does not exist.
 	LPushX(key string, values ...interface{}) (int64, error)
 
+	// LRange 返回存储在 key 的列表里指定范围内的元素。
+	// Returns the elements in the specified range stored in the list at key.
 	LRange(key string, start, stop int64) ([]string, error)
 
+	// LRem 从存于 key 的列表里移除前 count 次出现的值为 value 的元素
+	// Removes the first count occurrences of the element whose value is value from the list stored at key.
 	LRem(key string, count int64, value interface{}) (int64, error)
 
+	// LSet 设置 index 位置的list元素的值为 value。
+	// Sets the value of the list element at index position to value.
 	LSet(key string, index int64, value interface{}) (string, error)
 
+	// LTrim 修剪(trim)一个已存在的 list，这样 list 就会只包含指定范围的指定元素。
+	// Trim an existing list so that the list contains only the specified elements in the specified range.
 	LTrim(key string, start, stop int64) (string, error)
 
+	// RPop 推出并返回存于 key 的 list 的最后一个元素。
+	// Push out and return the last element of the list stored at key.
 	RPop(key string) (string, error)
 
+	// RPopCount 推出右边指定数量的元素并返回存于 key 的 list。
+	// Extracts the specified number of elements on the right and returns the list stored at key.
 	RPopCount(key string, count int) ([]string, error)
 
+	// RPopLPush 原子性地返回并移除存储在 source 的列表的最后一个元素（列表尾部元素）， 并把该元素放入存储在 destination 的列表的第一个元素位置（列表头部）。
+	// Atomically returns and removes the last element of the list stored in source (the tail of the list) and places that element in the position of the first element of the list stored in destination (the head of the list).
 	RPopLPush(source, destination string) (string, error)
 
+	// RPush 向存于 key 的列表的尾部插入所有指定的值。如果 key 不存在，那么会创建一个空的列表然后再进行 push 操作。 当 key 保存的不是一个列表，那么会返回一个错误。
+	// Inserts all specified values to the end of the list stored at key. If the key does not exist, an empty list is created and then the push operation is performed. When key does not hold a list, an error is returned.
 	RPush(key string, values ...interface{}) (int64, error)
 
+	// RPushX 将值 value 插入到列表 key 的表尾, 当且仅当 key 存在并且是一个列表。 和 RPUSH 命令相反, 当 key 不存在时，RPUSHX 命令什么也不做。
+	// Inserts the value value at the end of the list key if and only if key exists and is a list. Contrary to the RPUSH command, the RPUSHX command does nothing when the key does not exist.
 	RPushX(key string, values ...interface{}) (int64, error)
 
 	// lists end
 
 	// scripting start
+
+	// Eval 在服务器端执行 LUA 脚本。
+	// Execute LUA scripts on the server side.
 	Eval(script string, keys []string, args ...interface{}) (interface{}, error)
 
+	// EvalSha 根据给定的 SHA1 校验码，对缓存在服务器中的脚本进行求值。 将脚本缓存到服务器的操作可以通过 SCRIPT LOAD 命令进行。 这个命令的其他地方，比如参数的传入方式，都和 EVAL命令一样。
+	// Evaluate the script cached in the server against the given SHA1 checksum. Caching scripts to the server can be done with the SCRIPT LOAD command. The rest of this command, such as the way parameters are passed in, are the same as the EVAL command.
 	EvalSha(sha1 string, keys []string, args ...interface{}) (interface{}, error)
 
+	// ScriptExists 检查脚本是否存在脚本缓存里面。
+	// Check if the script exists in the script cache.
 	ScriptExists(hashes ...string) ([]bool, error)
 
+	// ScriptFlush 清空Lua脚本缓存
+	// Flush the Lua scripts cache.
 	ScriptFlush() (string, error)
 
+	// ScriptKill 杀死当前正在运行的 Lua 脚本，当且仅当这个脚本没有执行过任何写操作时，这个命令才生效。
+	// Kills the currently running Lua script, if and only if the script has not performed any write operations, this command will take effect.
 	ScriptKill() (string, error)
 
+	// ScriptLoad 将脚本 script 添加到脚本缓存中，但并不立即执行该脚本。在脚本被加入到缓存之后，通过 EVALSHA 命令，可以使用脚本的 SHA1 校验和来调用这个脚本。
+	// Adds the script script to the script cache, but does not execute the script immediately. After the script has been added to the cache, the script can be called with the SHA1 checksum of the script via the EVALSHA command.
 	ScriptLoad(script string) (string, error)
 
 	// scripting end
 
 	// zset start
 
+	// ZAdd 将所有指定成员添加到键为key有序集合（sorted set）里面。
+	// Adds all specified members to the keyed sorted set (sorted set).
 	ZAdd(key string, members ...*Z) (int64, error)
 
+	// ZCard 返回key的有序集元素个数。
+	// Returns the number of elements in the sorted set for key.
 	ZCard(key string) (int64, error)
 
+	// ZCount 返回有序集key中，score值在min和max之间(默认包括score值等于min或max)的成员。 关于参数min和max的详细使用方法，请参考ZRANGEBYSCORE命令。
+	// Returns the members of the sorted set key whose score value is between min and max (by default, the score value is equal to min or max). For details on how to use the parameters min and max, please refer to the ZRANGEBYSCORE command.
 	ZCount(key, min, max string) (int64, error)
 
+	// ZIncrBy 为有序集key的成员member的score值加上增量increment。如果key中不存在member，就在key中添加一个member，score是increment（就好像它之前的score是0.0）。如果key不存在，就创建一个只含有指定member成员的有序集合。为有序集key的成员member的score值加上增量increment。如果key中不存在member，就在key中添加一个member，score是increment（就好像它之前的score是0.0）。如果key不存在，就创建一个只含有指定member成员的有序集合。
+	// Increment is added to the score value of the member member of the sorted set key. If a member does not exist in the key, add a member to the key with a score of increment (as if the previous score was 0.0). If the key does not exist, create an ordered set containing only the specified member members. Increment is added to the score value of the member member of the sorted set key. If a member does not exist in the key, add a member to the key with a score of increment (as if the previous score was 0.0). If the key does not exist, create an ordered set containing only the specified member members.
 	ZIncrBy(key string, increment float64, member string) (float64, error)
 
+	// ZInterStore 计算给定的numkeys个有序集合的交集，并且把结果放到destination中。 在给定要计算的key和其它参数之前，必须先给定key个数(numberkeys)。
+	// Computes the intersection of the given numkeys sorted sets and places the result in destination. Before the key and other parameters to be calculated are given, the number of keys (numberkeys) must be given.
 	ZInterStore(destination string, store *ZStore) (int64, error)
 
+	// ZLexCount 计算有序集合中指定成员之间的成员数量。
+	// Counts the number of members between the specified members in a sorted set.
 	ZLexCount(key, min, max string) (int64, error)
 
+	// ZPopMax 删除并返回有序集合key中的最多count个具有最高得分的成员。
+	// Removes and returns at most count members with the highest score in the sorted set key.
 	ZPopMax(key string, count ...int64) ([]Z, error)
 
+	// ZPopMin 删除并返回有序集合key中的最多count个具有最低得分的成员。
+	// Removes and returns at most count members with the lowest score in the sorted set key.
 	ZPopMin(key string, count ...int64) ([]Z, error)
 
+	// ZRange 返回存储在有序集合key中的指定范围的元素。 返回的元素可以认为是按得分从最低到最高排列。 如果得分相同，将按字典排序。
+	// Returns the specified range of elements stored in the sorted set key. The returned elements can be thought of as ordered from lowest to highest score. If the scores are the same, they will be sorted lexicographically.
 	ZRange(key string, start, stop int64) ([]string, error)
 
+	// ZRangeByLex 返回指定成员区间内的成员，按成员字典正序排序, 分数必须相同。 在某些业务场景中,需要对一个字符串数组按名称的字典顺序进行排序时,可以使用Redis中SortSet这种数据结构来处理。
+	// Returns the members in the specified member range, sorted in the positive lexicographic order of the members, and the scores must be the same. In some business scenarios, when a string array needs to be sorted according to the lexicographical order of names, a data structure such as SortSet in Redis can be used for processing.
 	ZRangeByLex(key string, opt *ZRangeBy) ([]string, error)
 
+	// ZRevRangeByLex 返回指定成员区间内的成员，按成员字典倒序排序, 分数必须相同。
+	// Returns the members in the specified member range, sorted in reverse lexicographic order of the members, and the scores must be the same.
 	ZRevRangeByLex(key string, opt *ZRangeBy) ([]string, error)
 
+	// ZRangeByScore 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列。
+	// Returns a list of members of the ordered collection with the specified score interval. The members of the ordered set are arranged in order of increasing score value (from small to large).
 	ZRangeByScore(key string, opt *ZRangeBy) ([]string, error)
 
+	// ZRank 返回有序集中指定成员的排名。其中有序集成员按分数值递增(从小到大)顺序排列。
+	// Returns the rank of the specified member in the sorted set. The ordered set members are arranged in order of increasing score value (from small to large).
 	ZRank(key, member string) (int64, error)
 
+	// ZRem 移除有序集中的一个或多个成员，不存在的成员将被忽略。
+	// Removes one or more members from the sorted set, non-existing members are ignored.
 	ZRem(key string, members ...interface{}) (int64, error)
 
+	// ZRemRangeByLex 移除有序集合中给定的字典区间的所有成员。
+	// Removes all members of the given dictionary range in the sorted set.
 	ZRemRangeByLex(key, min, max string) (int64, error)
 
+	// ZRemRangeByRank 移除有序集中，指定排名(rank)区间内的所有成员。
+	// Removes all members from an ordered set, specifying a rank interval.
 	ZRemRangeByRank(key string, start, stop int64) (int64, error)
 
+	// ZRemRangeByScore 移除有序集中，指定分数（score）区间内的所有成员。
+	// Removes all members from an ordered set with a specified score interval.
 	ZRemRangeByScore(key, min, max string) (int64, error)
 
+	// ZRevRange 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。具有相同分数值的成员按字典序的逆序(reverse lexicographical order)排列。
+	// Returns a sorted set with members in the specified range. The positions of the members are arranged in decreasing order of score value (from largest to smallest). Members with the same score value are arranged in reverse lexicographical order.
 	ZRevRange(key string, start, stop int64) ([]string, error)
 
+	// ZRevRangeByScore 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。具有相同分数值的成员按字典序的逆序(reverse lexicographical order )排列。
+	// Returns all members of the sorted set within the specified score interval. The ordered set members are arranged in order of decreasing score value (largest to smallest). Members with the same score value are arranged in reverse lexicographical order.
 	ZRevRangeByScore(key string, opt *ZRangeBy) ([]string, error)
 
+	// ZRevRank 返回有序集中成员的排名。其中有序集成员按分数值递减(从大到小)排序。
+	// Returns the rank of the members in the sorted set. The members of the ordered set are sorted by decreasing score value (large to small).
 	ZRevRank(key, member string) (int64, error)
 
+	// ZScore 返回有序集中，成员的分数值。 如果成员元素不是有序集 key 的成员，或 key 不存在，返回 nil 。
+	// Returns the fractional value of the members in the sorted set. Returns nil if the member element is not a member of the sorted set key, or if the key does not exist.
 	ZScore(key, member string) (float64, error)
 
+	// ZUnionStore 计算给定的一个或多个有序集的并集，其中给定 key 的数量必须以 numkeys 参数指定，并将该并集(结果集)储存到 destination 。
+	// Computes the union of one or more ordered sets given, where the number of given keys must be specified with the numkeys parameter, and stores the union (result set) in destination .
 	ZUnionStore(key string, store *ZStore) (int64, error)
 
+	// ZScan 用于迭代有序集合中的元素（包括元素成员和元素分值）
+	// Used to iterate over elements in a sorted set (including element members and element scores).
 	ZScan(key string, cursor uint64, match string, count int64) ([]string, uint64, error)
 }
