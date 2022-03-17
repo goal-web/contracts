@@ -62,11 +62,11 @@ type RedisSubscribeFunc func(message, channel string)
 type RedisConnection interface {
 	// Subscribe 订阅一组给定的消息频道
 	// subscribe to a set of given channels for messages.
-	Subscribe(channels []string, closure RedisSubscribeFunc)
+	Subscribe(channels []string, closure RedisSubscribeFunc) error
 
 	// PSubscribe 使用通配符订阅一组给定频道
 	// subscribe to a set of given channels with wildcards.
-	PSubscribe(channels []string, closure RedisSubscribeFunc)
+	PSubscribe(channels []string, closure RedisSubscribeFunc) error
 
 	// Command 对 Redis 数据库运行命令
 	// Run a command against the Redis database.
@@ -79,7 +79,6 @@ type RedisConnection interface {
 	PubSubNumPat() (int64, error)
 
 	Publish(channel string, message interface{}) (int64, error)
-
 
 	// Get 返回给定键的值
 	// Returns the value of the given key.
