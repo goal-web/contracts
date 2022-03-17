@@ -340,11 +340,7 @@ type QueryBuilder interface {
 
 	// InRandomOrder 将查询的结果按随机顺序排列
 	// Put the query's results in random order.
-	InRandomOrder() QueryBuilder
-
-	// InRandOrder 将查询的结果按随机顺序排列
-	// Put the query's results in random order.
-	InRandOrder() QueryBuilder
+	InRandomOrder(orderFunc ...OrderType) QueryBuilder
 
 	// When 如果给定的“值”为真，则应用回调的查询更改
 	// Apply the callback's query changes if the given "value" is true.
