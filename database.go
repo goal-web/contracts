@@ -1,6 +1,5 @@
 package contracts
 
-
 import "time"
 
 // DBConnector 获取数据库连接实例
@@ -139,7 +138,6 @@ type QueryBuilder interface {
 	// Append a subselect expression to the query.
 	AddSelectSub(provider QueryProvider, as string) QueryBuilder
 
-
 	// WithCount 添加子选择查询以计算关系
 	// Add subselect queries to count the relations.
 	WithCount(columns ...string) QueryBuilder
@@ -159,7 +157,6 @@ type QueryBuilder interface {
 	// WithMin 添加子选择查询以包括关系列的最小值
 	// Add subselect queries to include the min of the relation's column.
 	WithMin(column string, as ...string) QueryBuilder
-
 
 	// Count 检索查询的“count”结果
 	// Retrieve the "count" result of the query.
@@ -181,11 +178,9 @@ type QueryBuilder interface {
 	// Retrieve the minimum value of a given column.
 	Min(column string, as ...string) int64
 
-
 	// Distinct 强制查询只返回不同的结果
 	// Force the query to only return distinct results.
 	Distinct() QueryBuilder
-
 
 	// From 设置查询所针对的表
 	// Set the table which the query is targeting.
@@ -198,7 +193,6 @@ type QueryBuilder interface {
 	// FromSub 从子查询中“从”获取
 	// Makes "from" fetch from a subquery.
 	FromSub(provider QueryProvider, as string) QueryBuilder
-
 
 	// Join 向查询中添加连接子句
 	// Add a join clause to the query.
@@ -224,7 +218,6 @@ type QueryBuilder interface {
 	// Add a right join to the query.
 	RightJoin(table string, first, condition, second string) QueryBuilder
 
-
 	// Where 向查询添加基本 where 子句
 	// Add a basic where clause to the query.
 	Where(column string, args ...interface{}) QueryBuilder
@@ -245,7 +238,6 @@ type QueryBuilder interface {
 	// Add a nested "or where" statement to the query
 	OrWhereFunc(callback QueryFunc) QueryBuilder
 
-
 	// WhereIn 在查询中添加“where in”子句
 	// Add a "where in" clause to the query.
 	WhereIn(column string, args interface{}, whereType ...WhereJoinType) QueryBuilder
@@ -261,7 +253,6 @@ type QueryBuilder interface {
 	// OrWhereNotIn 在查询中添加“or where not in”子句
 	// Add an "or where not in" clause to the query.
 	OrWhereNotIn(column string, args interface{}) QueryBuilder
-
 
 	// WhereBetween 在查询中添加 where between 语句
 	// Add a where between statement to the query.
@@ -279,7 +270,6 @@ type QueryBuilder interface {
 	// Add an or where not between statement to the query.
 	OrWhereNotBetween(column string, args interface{}) QueryBuilder
 
-
 	// WhereIsNull 在查询中添加“where null”子句
 	// Add a "where null" clause to the query.
 	WhereIsNull(column string, whereType ...WhereJoinType) QueryBuilder
@@ -295,7 +285,6 @@ type QueryBuilder interface {
 	// WhereNotNull 在查询中添加“where not null”子句
 	// Add a "where not null" clause to the query.
 	WhereNotNull(column string, whereType ...WhereJoinType) QueryBuilder
-
 
 	// WhereExists 在查询中添加一个存在子句
 	// Add an exists clause to the query.
@@ -313,7 +302,6 @@ type QueryBuilder interface {
 	// Add a where not exists clause to the query.
 	OrWhereNotExists(provider QueryProvider) QueryBuilder
 
-
 	// Union 在查询中添加联合语句
 	// Add a union statement to the query.
 	Union(builder QueryBuilder, unionType ...UnionJoinType) QueryBuilder
@@ -330,7 +318,6 @@ type QueryBuilder interface {
 	// Add a union all statement to the query and order by.
 	UnionAllByProvider(builder QueryProvider) QueryBuilder
 
-
 	// GroupBy 在查询中添加“group by”子句
 	// Add a "group by" clause to the query.
 	GroupBy(columns ...string) QueryBuilder
@@ -342,7 +329,6 @@ type QueryBuilder interface {
 	// OrHaving 在查询中添加“或有”子句
 	// Add an "or having" clause to the query.
 	OrHaving(column string, args ...interface{}) QueryBuilder
-
 
 	// OrderBy 在查询中添加“order by”子句
 	// Add an "order by" clause to the query.
@@ -356,11 +342,13 @@ type QueryBuilder interface {
 	// Put the query's results in random order.
 	InRandomOrder() QueryBuilder
 
+	// InRandOrder 将查询的结果按随机顺序排列
+	// Put the query's results in random order.
+	InRandOrder() QueryBuilder
 
 	// When 如果给定的“值”为真，则应用回调的查询更改
 	// Apply the callback's query changes if the given "value" is true.
 	When(condition bool, callback QueryCallback, elseCallback ...QueryCallback) QueryBuilder
-
 
 	// ToSql 获取查询的 SQL 表示
 	// get the SQL representation of the query.
@@ -369,7 +357,6 @@ type QueryBuilder interface {
 	// GetBindings 获取扁平数组中的当前查询值绑定
 	// get the current query value bindings in a flattened array.
 	GetBindings() (results []interface{})
-
 
 	// Offset 设置查询的“Offset”值
 	// Set the "offset" value of the query.
@@ -391,7 +378,6 @@ type QueryBuilder interface {
 	// Set the limit and offset for a given page.
 	WithPagination(perPage int64, current ...int64) QueryBuilder
 
-
 	// Chunk 将查询结果分块
 	// chunk the results of the query.
 	Chunk(size int, handler func(collection Collection, page int) error) error
@@ -399,7 +385,6 @@ type QueryBuilder interface {
 	// ChunkById 通过比较 ID 对查询结果进行分块
 	// chunk the results of a query by comparing IDs.
 	ChunkById(size int, handler func(collection Collection, page int) error) error
-
 
 	// SelectSql 获取此 query builder 的当前规范形成的完整 SQL 字符串。
 	// Gets the complete SQL string formed by the current specifications of this query builder.
@@ -415,11 +400,9 @@ type QueryBuilder interface {
 	DeleteSql() (sql string, bindings []interface{})
 	UpdateSql(value Fields) (sql string, bindings []interface{})
 
-
 	// SetExecutor 设置执行者
 	// set executor.
 	SetExecutor(executor SqlExecutor) QueryBuilder
-
 
 	// Insert 向数据库中插入新记录
 	// insert new records into the database.
@@ -437,7 +420,6 @@ type QueryBuilder interface {
 	// Insert a new record into the database, and if it exists, delete this row of data first, and then insert new data.
 	InsertOrReplace(values ...Fields) int64
 
-
 	// Create 保存新模型并返回实例
 	// Save a new model and return the instance.
 	Create(fields Fields) interface{}
@@ -445,7 +427,6 @@ type QueryBuilder interface {
 	// FirstOrCreate 获取与属性匹配的第一条记录或创建它
 	// get the first record matching the attributes or create it.
 	FirstOrCreate(values ...Fields) interface{}
-
 
 	// Update 更新数据库中的记录
 	// update records in the database.
@@ -458,7 +439,6 @@ type QueryBuilder interface {
 	// UpdateOrCreate 创建或更新与属性匹配的记录，并用值填充它
 	// create or update a record matching the attributes, and fill it with values.
 	UpdateOrCreate(attributes Fields, values ...Fields) interface{}
-
 
 	// Get 将查询作为“选择”语句执行
 	// Execute the query as a "select" statement.
@@ -488,11 +468,9 @@ type QueryBuilder interface {
 	// Add a basic where clause to the query, and return the first result.
 	FirstWhere(column string, args ...interface{}) interface{}
 
-
 	// Delete 从数据库中删除记录
 	// delete records from the database.
 	Delete() int64
-
 
 	// Paginate 对给定的查询进行分页。
 	// paginate the given query.
@@ -501,7 +479,6 @@ type QueryBuilder interface {
 	// SimplePaginate 将给定的查询分页成一个简单的分页器
 	// paginate the given query into a simple paginator.
 	SimplePaginate(perPage int64, current ...int64) Collection
-
 
 	// Bind 注册查询构造器
 	// binding Query Builder.
