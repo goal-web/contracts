@@ -6,10 +6,12 @@ import (
 )
 
 type Context interface {
-	// Get retrieves data from the context.
+	// Get 从上下文中检索数据
+	// retrieves data from the context.
 	Get(key string) interface{}
 
-	// Set saves data in the context.
+	// Set 在上下文中保存数据
+	// saves data in the context.
 	Set(key string, val interface{})
 }
 
