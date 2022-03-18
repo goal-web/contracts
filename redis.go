@@ -1,6 +1,7 @@
 package contracts
 
 import (
+	"context"
 	"time"
 )
 
@@ -60,6 +61,7 @@ type ZRangeBy struct {
 type RedisSubscribeFunc func(message, channel string)
 
 type RedisConnection interface {
+	RedisConnectionCtx
 	// Subscribe 订阅一组给定的消息频道
 	// subscribe to a set of given channels for messages.
 	Subscribe(channels []string, closure RedisSubscribeFunc) error
@@ -75,7 +77,6 @@ type RedisConnection interface {
 	// PubSubChannels 列出当前active channels.活跃是指信道含有一个或多个订阅者(不包括从模式接收订阅的客户端) 如果pattern未提供，所有的信道都被列出，否则只列出匹配上指定全局-类型模式的信道被列出.
 	// List the currently active channels. Active means that the channel contains one or more subscribers (excluding clients receiving subscriptions from the pattern). If pattern is not provided, all channels are listed, otherwise only lists matching the specified global- Channels of type mode are listed.
 	PubSubChannels(pattern string) ([]string, error)
-
 
 	// PubSubNumSub 列出指定信道的订阅者个数(不包括订阅模式的客户端订阅者)
 	// List the number of subscribers to the specified channel (excluding client subscribers in subscription mode).
@@ -654,4 +655,329 @@ type RedisConnection interface {
 	// ZScan 用于迭代有序集合中的元素（包括元素成员和元素分值）
 	// Used to iterate over elements in a sorted set (including element members and element scores).
 	ZScan(key string, cursor uint64, match string, count int64) ([]string, uint64, error)
+}
+
+type RedisConnectionCtx interface {
+	// SubscribeWithContext 订阅一组给定的消息频道
+	// SubscribeWithContext to a set of given channels for messages.
+	SubscribeWithContext(ctx context.Context, channels []string, closure RedisSubscribeFunc) error
+
+	// PSubscribeWithContext 使用通配符订阅一组给定频道
+	// SubscribeWithContext to a set of given channels with wildcards.
+	PSubscribeWithContext(ctx context.Context, channels []string, closure RedisSubscribeFunc) error
+
+	// CommandWithContext 对 Redis 数据库运行命令
+	// Run a CommandWithContext against the Redis database.
+	CommandWithContext(ctx context.Context, method string, args ...interface{}) (interface{}, error)
+
+	PubSubChannelsWithContext(ctx context.Context, pattern string) ([]string, error)
+
+	PubSubNumSubWithContext(ctx context.Context, channels ...string) (map[string]int64, error)
+
+	PubSubNumPatWithContext(ctx context.Context) (int64, error)
+
+	PublishWithContext(ctx context.Context, channel string, message interface{}) (int64, error)
+
+	// GetWithContext 返回给定键的值
+	// Returns the value of the given key.
+	GetWithContext(ctx context.Context, key string) (string, error)
+
+	// MGetWithContext 获取所有给定键的值
+	// get the values of all the given keys.
+	MGetWithContext(ctx context.Context, keys ...string) ([]interface{}, error)
+
+	// GetBitWithContext 对 key 所储存的字符串值，对获取指定偏移量上的位(bit)
+	// For the string value stored in key, get the bit at the specified offset.
+	GetBitWithContext(ctx context.Context, key string, offset int64) (int64, error)
+
+	BitOpAndWithContext(ctx context.Context, destKey string, keys ...string) (int64, error)
+
+	BitOpNotWithContext(ctx context.Context, destKey string, key string) (int64, error)
+
+	BitOpOrWithContext(ctx context.Context, destKey string, keys ...string) (int64, error)
+
+	BitOpXorWithContext(ctx context.Context, destKey string, keys ...string) (int64, error)
+
+	GetDelWithContext(ctx context.Context, key string) (string, error)
+
+	GetExWithContext(ctx context.Context, key string, expiration time.Duration) (string, error)
+
+	GetRangeWithContext(ctx context.Context, key string, start, end int64) (string, error)
+
+	GetSetWithContext(ctx context.Context, key string, value interface{}) (string, error)
+
+	ClientGetNameWithContext(ctx context.Context) (string, error)
+
+	StrLenWithContext(ctx context.Context, key string) (int64, error)
+
+	// getter end
+	// keys start
+
+	KeysWithContext(ctx context.Context, pattern string) ([]string, error)
+
+	DelWithContext(ctx context.Context, keys ...string) (int64, error)
+
+	FlushAllWithContext(ctx context.Context) (string, error)
+
+	FlushDBWithContext(ctx context.Context) (string, error)
+
+	DumpWithContext(ctx context.Context, key string) (string, error)
+
+	ExistsWithContext(ctx context.Context, keys ...string) (int64, error)
+
+	ExpireWithContext(ctx context.Context, key string, expiration time.Duration) (bool, error)
+
+	ExpireAtWithContext(ctx context.Context, key string, tm time.Time) (bool, error)
+
+	PExpireWithContext(ctx context.Context, key string, expiration time.Duration) (bool, error)
+
+	PExpireAtWithContext(ctx context.Context, key string, tm time.Time) (bool, error)
+
+	MigrateWithContext(ctx context.Context, host, port, key string, db int, timeout time.Duration) (string, error)
+
+	MoveWithContext(ctx context.Context, key string, db int) (bool, error)
+
+	PersistWithContext(ctx context.Context, key string) (bool, error)
+
+	PTTLWithContext(ctx context.Context, key string) (time.Duration, error)
+
+	TTLWithContext(ctx context.Context, key string) (time.Duration, error)
+
+	RandomKeyWithContext(ctx context.Context) (string, error)
+
+	RenameWithContext(ctx context.Context, key, newKey string) (string, error)
+
+	RenameNXWithContext(ctx context.Context, key, newKey string) (bool, error)
+
+	TypeWithContext(ctx context.Context, key string) (string, error)
+
+	WaitWithContext(ctx context.Context, numSlaves int, timeout time.Duration) (int64, error)
+
+	ScanWithContext(ctx context.Context, cursor uint64, match string, count int64) ([]string, uint64, error)
+
+	BitCountWithContext(ctx context.Context, key string, count *BitCount) (int64, error)
+
+	// keys end
+
+	// setter start
+	SetWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error)
+
+	AppendWithContext(ctx context.Context, key, value string) (int64, error)
+
+	MSetWithContext(ctx context.Context, values ...interface{}) (string, error)
+
+	MSetNXWithContext(ctx context.Context, values ...interface{}) (bool, error)
+
+	SetNXWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (bool, error)
+
+	SetEXWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error)
+
+	SetBitWithContext(ctx context.Context, key string, offset int64, value int) (int64, error)
+
+	BitPosWithContext(ctx context.Context, key string, bit int64, pos ...int64) (int64, error)
+
+	SetRangeWithContext(ctx context.Context, key string, offset int64, value string) (int64, error)
+
+	IncrWithContext(ctx context.Context, key string) (int64, error)
+
+	DecrWithContext(ctx context.Context, key string) (int64, error)
+
+	IncrByWithContext(ctx context.Context, key string, value int64) (int64, error)
+
+	DecrByWithContext(ctx context.Context, key string, value int64) (int64, error)
+
+	IncrByFloatWithContext(ctx context.Context, key string, value float64) (float64, error)
+
+	// setter end
+
+	// hash start
+	HGetWithContext(ctx context.Context, key, field string) (string, error)
+
+	HGetAllWithContext(ctx context.Context, key string) (map[string]string, error)
+
+	HMGetWithContext(ctx context.Context, key string, fields ...string) ([]interface{}, error)
+
+	HKeysWithContext(ctx context.Context, key string) ([]string, error)
+
+	HLenWithContext(ctx context.Context, key string) (int64, error)
+
+	HRandFieldWithContext(ctx context.Context, key string, count int, withValues bool) ([]string, error)
+
+	HScanWithContext(ctx context.Context, key string, cursor uint64, match string, count int64) ([]string, uint64, error)
+
+	HValuesWithContext(ctx context.Context, key string) ([]string, error)
+
+	HSetWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+
+	HSetNXWithContext(ctx context.Context, key, field string, value interface{}) (bool, error)
+
+	HMSetWithContext(ctx context.Context, key string, values ...interface{}) (bool, error)
+
+	HDelWithContext(ctx context.Context, key string, fields ...string) (int64, error)
+
+	HExistsWithContext(ctx context.Context, key string, field string) (bool, error)
+
+	HIncrByWithContext(ctx context.Context, key string, field string, value int64) (int64, error)
+
+	HIncrByFloatWithContext(ctx context.Context, key string, field string, value float64) (float64, error)
+
+	// hash end
+
+	// set start
+	SAddWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+
+	SCardWithContext(ctx context.Context, key string) (int64, error)
+
+	SDiffWithContext(ctx context.Context, keys ...string) ([]string, error)
+
+	SDiffStoreWithContext(ctx context.Context, destination string, keys ...string) (int64, error)
+
+	SInterWithContext(ctx context.Context, keys ...string) ([]string, error)
+
+	SInterStoreWithContext(ctx context.Context, destination string, keys ...string) (int64, error)
+
+	SIsMemberWithContext(ctx context.Context, key string, member interface{}) (bool, error)
+
+	SMembersWithContext(ctx context.Context, key string) ([]string, error)
+
+	SRemWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+
+	SPopNWithContext(ctx context.Context, key string, count int64) ([]string, error)
+
+	SPopWithContext(ctx context.Context, key string) (string, error)
+
+	SRandMemberNWithContext(ctx context.Context, key string, count int64) ([]string, error)
+
+	SMoveWithContext(ctx context.Context, source, destination string, member interface{}) (bool, error)
+
+	SRandMemberWithContext(ctx context.Context, key string) (string, error)
+
+	SUnionWithContext(ctx context.Context, keys ...string) ([]string, error)
+
+	SUnionStoreWithContext(ctx context.Context, destination string, keys ...string) (int64, error)
+
+	// set end
+
+	// geo start
+
+	GeoAddWithContext(ctx context.Context, key string, geoLocation ...*GeoLocation) (int64, error)
+
+	GeoHashWithContext(ctx context.Context, key string, members ...string) ([]string, error)
+
+	GeoPosWithContext(ctx context.Context, key string, members ...string) ([]*GeoPos, error)
+
+	GeoDistWithContext(ctx context.Context, key string, member1, member2, unit string) (float64, error)
+
+	GeoRadiusWithContext(ctx context.Context, key string, longitude, latitude float64, query *GeoRadiusQuery) ([]GeoLocation, error)
+
+	GeoRadiusStoreWithContext(ctx context.Context, key string, longitude, latitude float64, query *GeoRadiusQuery) (int64, error)
+
+	GeoRadiusByMemberWithContext(ctx context.Context, key, member string, query *GeoRadiusQuery) ([]GeoLocation, error)
+
+	GeoRadiusByMemberStoreWithContext(ctx context.Context, key, member string, query *GeoRadiusQuery) (int64, error)
+
+	// geo end
+
+	// lists start
+
+	BLPopWithContext(ctx context.Context, timeout time.Duration, keys ...string) ([]string, error)
+
+	BRPopWithContext(ctx context.Context, timeout time.Duration, keys ...string) ([]string, error)
+
+	BRPopLPushWithContext(ctx context.Context, source, destination string, timeout time.Duration) (string, error)
+
+	LIndexWithContext(ctx context.Context, key string, index int64) (string, error)
+
+	LInsertWithContext(ctx context.Context, key, op string, pivot, value interface{}) (int64, error)
+
+	LLenWithContext(ctx context.Context, key string) (int64, error)
+
+	LPopWithContext(ctx context.Context, key string) (string, error)
+
+	LPushWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+
+	LPushXWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+
+	LRangeWithContext(ctx context.Context, key string, start, stop int64) ([]string, error)
+
+	LRemWithContext(ctx context.Context, key string, count int64, value interface{}) (int64, error)
+
+	LSetWithContext(ctx context.Context, key string, index int64, value interface{}) (string, error)
+
+	LTrimWithContext(ctx context.Context, key string, start, stop int64) (string, error)
+
+	RPopWithContext(ctx context.Context, key string) (string, error)
+
+	RPopCountWithContext(ctx context.Context, key string, count int) ([]string, error)
+
+	RPopLPushWithContext(ctx context.Context, source, destination string) (string, error)
+
+	RPushWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+
+	RPushXWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+
+	// lists end
+
+	// scripting start
+	EvalWithContext(ctx context.Context, script string, keys []string, args ...interface{}) (interface{}, error)
+
+	EvalShaWithContext(ctx context.Context, sha1 string, keys []string, args ...interface{}) (interface{}, error)
+
+	ScriptExistsWithContext(ctx context.Context, hashes ...string) ([]bool, error)
+
+	ScriptFlushWithContext(ctx context.Context) (string, error)
+
+	ScriptKillWithContext(ctx context.Context) (string, error)
+
+	ScriptLoadWithContext(ctx context.Context, script string) (string, error)
+
+	// scripting end
+
+	// zset start
+
+	ZAddWithContext(ctx context.Context, key string, members ...*Z) (int64, error)
+
+	ZCardWithContext(ctx context.Context, key string) (int64, error)
+
+	ZCountWithContext(ctx context.Context, key, min, max string) (int64, error)
+
+	ZIncrByWithContext(ctx context.Context, key string, increment float64, member string) (float64, error)
+
+	ZInterStoreWithContext(ctx context.Context, destination string, store *ZStore) (int64, error)
+
+	ZLexCountWithContext(ctx context.Context, key, min, max string) (int64, error)
+
+	ZPopMaxWithContext(ctx context.Context, key string, count ...int64) ([]Z, error)
+
+	ZPopMinWithContext(ctx context.Context, key string, count ...int64) ([]Z, error)
+
+	ZRangeWithContext(ctx context.Context, key string, start, stop int64) ([]string, error)
+
+	ZRangeByLexWithContext(ctx context.Context, key string, opt *ZRangeBy) ([]string, error)
+
+	ZRevRangeByLexWithContext(ctx context.Context, key string, opt *ZRangeBy) ([]string, error)
+
+	ZRangeByScoreWithContext(ctx context.Context, key string, opt *ZRangeBy) ([]string, error)
+
+	ZRankWithContext(ctx context.Context, key, member string) (int64, error)
+
+	ZRemWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+
+	ZRemRangeByLexWithContext(ctx context.Context, key, min, max string) (int64, error)
+
+	ZRemRangeByRankWithContext(ctx context.Context, key string, start, stop int64) (int64, error)
+
+	ZRemRangeByScoreWithContext(ctx context.Context, key, min, max string) (int64, error)
+
+	ZRevRangeWithContext(ctx context.Context, key string, start, stop int64) ([]string, error)
+
+	ZRevRangeByScoreWithContext(ctx context.Context, key string, opt *ZRangeBy) ([]string, error)
+
+	ZRevRankWithContext(ctx context.Context, key, member string) (int64, error)
+
+	ZScoreWithContext(ctx context.Context, key, member string) (float64, error)
+
+	ZUnionStoreWithContext(ctx context.Context, key string, store *ZStore) (int64, error)
+
+	ZScanWithContext(ctx context.Context, key string, cursor uint64, match string, count int64) ([]string, uint64, error)
 }
