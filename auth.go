@@ -18,7 +18,6 @@ type Auth interface {
 	// Extended guard.
 	ExtendGuard(name string, guard GuardDriver)
 
-
 	// Guard 按名称获取守卫实例
 	// Get a guard instance by name.
 	Guard(name string, ctx Context) Guard
@@ -58,6 +57,9 @@ type Guard interface {
 	// Login 将用户登录到应用程序
 	// Log a user into the application.
 	Login(user Authenticatable) interface{}
+
+	// Logout 用户登出
+	Logout() error
 }
 
 type UserProvider interface {
