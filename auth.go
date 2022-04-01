@@ -60,6 +60,9 @@ type Guard interface {
 
 	// Logout 用户登出
 	Logout() error
+
+	// Error 获取错误
+	Error() error
 }
 
 type UserProvider interface {
