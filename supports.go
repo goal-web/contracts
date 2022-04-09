@@ -15,7 +15,7 @@ type Context interface {
 	Set(key string, val interface{})
 }
 
-type Fields map[string]interface{}
+type Fields map[string]any
 
 type Interface interface {
 	reflect.Type
@@ -64,61 +64,71 @@ type OptionalGetter interface {
 	FieldsOption(key string, defaultValue Fields) Fields
 }
 
-type Collection interface {
+type Collection[T any] interface {
 	Json
 	// sort
 
 	sort.Interface
-	Sort(sorter interface{}) Collection
+	Sort(func(previous T, next T) bool) Collection[T]
 	IsEmpty() bool
 
 	// filter
 
-	Map(filter interface{}) Collection
-	Filter(filter interface{}) Collection
-	Skip(filter interface{}) Collection
-	Where(field string, args ...interface{}) Collection
-	WhereLt(field string, arg interface{}) Collection
-	WhereLte(field string, arg interface{}) Collection
-	WhereGt(field string, arg interface{}) Collection
-	WhereGte(field string, arg interface{}) Collection
-	WhereIn(field string, arg interface{}) Collection
-	WhereNotIn(field string, arg interface{}) Collection
+	Map(func(item T, index int) T) Collection[T]       // 返回新的集合
+	Each(func(item T, index int)) Collection[T]        // 纯遍历
+	Filter(func(item T, index int) bool) Collection[T] // 返回 true 保留下来
+	Skip(func(item T, index int) bool) Collection[T]   // 返回 true 会跳过
+
+	Where(field string, args ...interface{}) Collection[T]
+	WhereNil(field string) Collection[T]
+	WhereNotNil(field string) Collection[T]
+	WhereLt(field string, arg interface{}) Collection[T]
+	WhereLte(field string, arg interface{}) Collection[T]
+	WhereGt(field string, arg interface{}) Collection[T]
+	WhereGte(field string, arg interface{}) Collection[T]
+	WhereIn(field string, arg interface{}) Collection[T]
+	WhereNotIn(field string, arg interface{}) Collection[T]
 
 	// keys、values
 
 	// Pluck 数据类型为 []map、[]struct 的时候起作用
 	Pluck(key string) Fields
 	// Only 数据类型为 []map、[]struct 的时候起作用
-	Only(keys ...string) Collection
+	Only(keys ...string) Collection[Fields]
 
 	// First 获取首个元素, []struct或者[]map可以获取指定字段
-	First(keys ...string) interface{}
+	First() T
+
 	// Last 获取最后一个元素, []struct或者[]map可以获取指定字段
-	Last(keys ...string) interface{}
+	Last() T
+
+	// FirstValue 第一个元素的指定字段
+	FirstValue(field string) any
+	// LastValue 最后一个元素的指定字段
+	LastValue(field string) any
 
 	// union、merge...
 
 	// Prepend 从开头插入元素
-	Prepend(item ...interface{}) Collection
+	Prepend(item ...T) Collection[T]
 	// Push 从最后插入元素
-	Push(items ...interface{}) Collection
+	Push(items ...T) Collection[T]
 	// Pull 从尾部获取并移出一个元素
-	Pull(defaultValue ...interface{}) interface{}
+	Pull(defaultValue ...T) T
 	// Shift 从头部获取并移出一个元素
-	Shift(defaultValue ...interface{}) interface{}
+	Shift(defaultValue ...T) T
 	// Put 替换一个元素，如果 index 不存在会执行 Push，返回新集合
-	Put(index int, item interface{}) Collection
+	Put(index int, item T) Collection[T]
 	// Offset 替换一个元素，如果 index 不存在会执行 Push
-	Offset(index int, item interface{}) Collection
+	Offset(index int, item T) Collection[T]
 	// Merge 合并其他集合
-	Merge(collections ...Collection) Collection
+	Merge(collections ...Collection[T]) Collection[T]
 	// Reverse 返回一个顺序翻转后的集合
-	Reverse() Collection
+	Reverse() Collection[T]
 	// Chunk 分块，handler 返回 error 表示中断
-	Chunk(size int, handler func(collection Collection, page int) error) error
+	Chunk(size int, handler func(collection Collection[T], page int)) error
 	// Random 随机返回n个元素，默认1个
-	Random(size ...uint) Collection
+	Random(size ...uint) Collection[T]
 
 	// aggregate
 
