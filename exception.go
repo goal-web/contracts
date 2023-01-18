@@ -1,8 +1,6 @@
 package contracts
 
-type Exception interface {
-	GetMessage() string
-}
+type Exception = error
 
 type ExceptionHandler interface {
 	// Handle 处理异常
