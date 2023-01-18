@@ -1,8 +1,7 @@
 package contracts
 
 type Exception interface {
-	error
-	FieldsProvider
+	GetMessage() string
 }
 
 type ExceptionHandler interface {

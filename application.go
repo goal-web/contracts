@@ -5,6 +5,9 @@ package contracts
 type Application interface {
 	Container
 
+	// GetExceptionHandler 获取异常处理器
+	GetExceptionHandler() ExceptionHandler
+
 	// IsProduction 判断是否为生产环境.
 	// Determine if it is a production environment.
 	IsProduction() bool
