@@ -1,6 +1,9 @@
 package contracts
 
-type Exception = error
+type Exception interface {
+	GetError() string
+	GetPrevious() *Exception
+}
 
 type ExceptionHandler interface {
 	// Handle 处理异常
