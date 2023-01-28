@@ -1,7 +1,7 @@
 package contracts
 
 type Exception interface {
-	GetError() string
+	Error() string
 	GetPrevious() *Exception
 }
 
