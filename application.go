@@ -8,6 +8,9 @@ type Application interface {
 	// GetExceptionHandler 获取异常处理器
 	GetExceptionHandler() ExceptionHandler
 
+	// GetConfig 获取配置类
+	GetConfig() Config
+
 	// IsProduction 判断是否为生产环境.
 	// Determine if it is a production environment.
 	IsProduction() bool
