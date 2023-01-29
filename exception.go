@@ -2,7 +2,7 @@ package contracts
 
 type Exception interface {
 	Error() string
-	GetPrevious() *Exception
+	GetPrevious() Exception
 }
 
 type ExceptionHandler interface {
