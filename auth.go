@@ -56,7 +56,7 @@ type Guard interface {
 
 	// Login 将用户登录到应用程序
 	// Log a user into the application.
-	Login(user Authenticatable) interface{}
+	Login(user Authenticatable) any
 
 	// Logout 用户登出
 	Logout() error
@@ -74,16 +74,16 @@ type UserProvider interface {
 type Authorizable interface {
 	// Can 确定实体是否具有给定的能力
 	// Determine if the entity has a given ability.
-	Can(ability string, arguments ...interface{}) bool
+	Can(ability string, arguments ...any) bool
 }
 
 // GateChecker 权限检查器
 // permission checker.
-type GateChecker func(user Authorizable, data ...interface{}) bool
+type GateChecker func(user Authorizable, data ...any) bool
 
 // GateHook 权限钩子
 // permission hook.
-type GateHook func(user Authorizable, ability string, data ...interface{}) bool
+type GateHook func(user Authorizable, ability string, data ...any) bool
 
 // Policy 权限策略, 一组检查器
 // Permission policy, a set of checkers.
@@ -93,27 +93,27 @@ type Gate interface {
 
 	// Allows 确定是否应该为当前用户授予给定的能力
 	// determined if the given ability should be granted for the current user.
-	Allows(ability string, arguments ...interface{}) bool
+	Allows(ability string, arguments ...any) bool
 
 	// Denies 确定是否应该为当前用户拒绝给定的能力
 	// Determine if the given ability should be denied for the current user.
-	Denies(ability string, arguments ...interface{}) bool
+	Denies(ability string, arguments ...any) bool
 
 	// Check 确定是否应为当前用户授予所有给定的能力
 	// Determine if all the given abilities should be granted for the current user.
-	Check(abilities []string, arguments ...interface{}) bool
+	Check(abilities []string, arguments ...any) bool
 
 	// Any 确定是否应为当前用户授予任何一种给定能力
 	// Determine if any one of the given abilities should be granted for the current user.
-	Any(abilities []string, arguments ...interface{}) bool
+	Any(abilities []string, arguments ...any) bool
 
 	// Authorize 确定是否应该为当前用户授予给定的能力
 	// Determine if the given ability should be granted for the current user.
-	Authorize(ability string, arguments ...interface{})
+	Authorize(ability string, arguments ...any)
 
 	// Inspect 给定能力的用户
 	// the user for the given ability.
-	Inspect(ability string, arguments ...interface{}) HttpResponse
+	Inspect(ability string, arguments ...any) HttpResponse
 
 	// ForUser 获取给定用户的警卫实例
 	// Get a guard instance for the given user.
@@ -132,7 +132,7 @@ type GateFactory interface {
 
 	// Policy 为给定的类类型定义一个策略类
 	// define a policy class for a given class type.
-	Policy(class Class, policy Policy) GateFactory
+	Policy(class Class[Authenticatable], policy Policy) GateFactory
 
 	// Before 注册一个回调以在所有 Gate 检查之前运行
 	// Register a callback to run before all Gate checks.
@@ -144,7 +144,7 @@ type GateFactory interface {
 
 	// Check 确定是否应为当前用户授予所有给定的能力
 	// Determine if all the given abilities should be granted for the current user.
-	Check(user Authorizable, ability string, arguments ...interface{}) bool
+	Check(user Authorizable, ability string, arguments ...any) bool
 
 	// Abilities 获得所有已定义的能力
 	// Get all the defined abilities.

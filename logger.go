@@ -7,7 +7,7 @@ type Logger interface {
 
 	// WithField 通过给定的key value 添加数据
 	// Add data by given key value.
-	WithField(key string, value interface{}) Logger
+	WithField(key string, value any) Logger
 
 	// WithError 添加错误
 	// add error.

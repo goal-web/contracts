@@ -13,23 +13,23 @@ type Serialization interface {
 type Serializer interface {
 	// Serialize 序列化给定的数据
 	// serialize the given data.
-	Serialize(interface{}) string
+	Serialize(any) string
 
 	// Unserialize 反序列化
 	// deserialize.
-	Unserialize(string, interface{}) error
+	Unserialize(string, any) error
 }
 
 type ClassSerializer interface {
 	// Register 注册解析类
 	// register parsing class.
-	Register(class Class)
+	Register(class Class[any])
 
 	// Serialize 序列化给定的数据
 	// serialize the given data.
-	Serialize(interface{}) string
+	Serialize(any) string
 
 	// Parse 解析序列化后的字符串
 	// parse the serialized string.
-	Parse(string) (interface{}, error)
+	Parse(string) (any, error)
 }

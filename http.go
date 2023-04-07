@@ -104,26 +104,26 @@ type HttpContext interface {
 
 	// Get 从上下文中检索数据
 	// retrieves data from the context.
-	Get(key string) interface{}
+	Get(key string) any
 
 	// Set 在上下文中保存数据
 	// saves data in the context.
-	Set(key string, val interface{})
+	Set(key string, val any)
 
 	// Bind 将请求正文绑定到提供的类型“i”。默认绑定器基于 Content-Type 标头执行此操作
 	// binds the request body into provided type `i`. The default
 	// binder does it based on Content-Type header.
-	Bind(i interface{}) error
+	Bind(i any) error
 
 	// Validate 验证提供的`i`。它通常在 `HttpContextBind()` 之后调用，验证器必须使用 `Echo#Validator` 注册
 	// validates provided `i`. It is usually called after `HttpContext#Bind()`.
 	// Validator must be registered using `Echo#Validator`.
-	Validate(i interface{}) error
+	Validate(i any) error
 
 	// Render 呈现带有数据的模板并发送带有状态码的 text/html 响应。渲染器必须使用 `Echo.Renderer` 注册
 	// renders a template with data and sends a text/html response with status
 	// code. Renderer must be registered using `Echo.Renderer`.
-	Render(code int, name string, data interface{}) error
+	Render(code int, name string, data any) error
 
 	// HTML 发送带有状态码的 HTTP 响应
 	// sends an HTTP response with status code.
@@ -139,11 +139,11 @@ type HttpContext interface {
 
 	// JSON 发送带有状态码的 json 响应
 	// sends a json response with status code.
-	JSON(code int, i interface{}) error
+	JSON(code int, i any) error
 
 	// JSONPretty 发送带有状态码的漂亮打印 json
 	// sends a pretty-print json with status code.
-	JSONPretty(code int, i interface{}, indent string) error
+	JSONPretty(code int, i any, indent string) error
 
 	// JSONBlob 发送带有状态码的 json blob 响应
 	// sends a json blob response with status code.
@@ -152,7 +152,7 @@ type HttpContext interface {
 	// JSONP 发送带有状态码的 jsonp 响应。它使用 `callback` 来构造 jsonp 有效负载
 	// sends a jsonp response with status code. It uses `callback` to construct
 	// the jsonp payload.
-	JSONP(code int, callback string, i interface{}) error
+	JSONP(code int, callback string, i any) error
 
 	// JSONPBlob 发送带有状态码的 jsonp blob 响应。它使用 `callback` 构造 jsonp 有效负载
 	// sends a jsonp blob response with status code. It uses `callback`
@@ -161,11 +161,11 @@ type HttpContext interface {
 
 	// XML 发送带有状态码的 xml 响应
 	// sends an xml response with status code.
-	XML(code int, i interface{}) error
+	XML(code int, i any) error
 
 	// XMLPretty 发送带有状态码的漂亮打印 xml
 	// sends a pretty-print xml with status code.
-	XMLPretty(code int, i interface{}, indent string) error
+	XMLPretty(code int, i any, indent string) error
 
 	// XMLBlob 发送带有状态码的 xml blob 响应
 	// sends an xml blob response with status code.
@@ -221,8 +221,8 @@ type HttpResponse interface {
 }
 
 type HttpRequest interface {
-	Getter
-	OptionalGetter
+	Getter[any]
+	OptionalGetter[any]
 	FieldsProvider
 
 	// Only 只获取指定 key 的数据
@@ -329,26 +329,26 @@ type HttpRequest interface {
 
 	// Get 从上下文中检索数据
 	// retrieves data from the context.
-	Get(key string) interface{}
+	Get(key string) any
 
 	// Set 在上下文中保存数据
 	// saves data in the context.
-	Set(key string, val interface{})
+	Set(key string, val any)
 
 	// Bind 将请求正文绑定到提供的类型“i”。默认绑定器基于 Content-Type 标头执行此操作
 	// binds the request body into provided type `i`. The default binder
 	// does it based on Content-Type header.
-	Bind(i interface{}) error
+	Bind(i any) error
 
 	// Validate 验证提供的`i`。它通常在 `HttpContext#Bind()` 之后调用。验证器必须使用 `Echo#Validator` 注册
 	// validates provided `i`. It is usually called after `HttpContext#Bind()`.
 	// Validator must be registered using `Echo#Validator`.
-	Validate(i interface{}) error
+	Validate(i any) error
 
 	// Render 呈现带有数据的模板并发送带有状态码的 text/html 响应。渲染器必须使用 `Echo.Renderer` 注册
 	// renders a template with data and sends a text/html response with status
 	// code. Renderer must be registered using `Echo.Renderer`.
-	Render(code int, name string, data interface{}) error
+	Render(code int, name string, data any) error
 
 	// HTML 发送带有状态码的 HTTP 响应
 	// sends an HTTP response with status code.
@@ -364,11 +364,11 @@ type HttpRequest interface {
 
 	// JSON 发送带有状态码的 json 响应
 	// sends a json response with status code.
-	JSON(code int, i interface{}) error
+	JSON(code int, i any) error
 
 	// JSONPretty 发送带有状态码的漂亮打印 json
 	// sends a pretty-print json with status code.
-	JSONPretty(code int, i interface{}, indent string) error
+	JSONPretty(code int, i any, indent string) error
 
 	// JSONBlob 发送带有状态码的 json blob 响应
 	// sends a json blob response with status code.
@@ -377,7 +377,7 @@ type HttpRequest interface {
 	// JSONP 发送带有状态码的 jsonp 响应。它使用“回调”来构造 jsonp 有效负载
 	// sends a jsonp response with status code. It uses `callback` to construct
 	// the jsonp payload.
-	JSONP(code int, callback string, i interface{}) error
+	JSONP(code int, callback string, i any) error
 
 	// JSONPBlob 发送带有状态码的 jsonp blob 响应。它使用 `callback` 来构造 jsonp 有效负载
 	// sends a jsonp blob response with status code. It uses `callback`
@@ -386,11 +386,11 @@ type HttpRequest interface {
 
 	// XML 发送带有状态码的 xml 响应
 	// sends an xml response with status code.
-	XML(code int, i interface{}) error
+	XML(code int, i any) error
 
 	// XMLPretty 发送带有状态码的漂亮打印 xml
 	// sends a pretty-print xml with status code.
-	XMLPretty(code int, i interface{}, indent string) error
+	XMLPretty(code int, i any, indent string) error
 
 	// XMLBlob 发送带有状态码的 xml blob 响应
 	// sends an xml blob response with status code.
@@ -450,7 +450,7 @@ type Sse interface {
 
 	// Send 发送消息给指定 fd 的连接
 	// send a message to the connection with the specified fd.
-	Send(fd uint64, message interface{}) error
+	Send(fd uint64, message any) error
 }
 
 type SseConnection interface {
@@ -460,7 +460,7 @@ type SseConnection interface {
 
 	// Send 发送消息给该连接
 	// send a message to this connection.
-	Send(message interface{}) error
+	Send(message any) error
 
 	// Close 关闭连接标识
 	// close connection ID.

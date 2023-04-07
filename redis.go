@@ -48,7 +48,7 @@ type ZStore struct {
 
 type Z struct {
 	Score  float64
-	Member interface{}
+	Member any
 }
 
 type ZRangeBy struct {
@@ -72,7 +72,7 @@ type RedisConnection interface {
 
 	// Command 对 Redis 数据库运行命令
 	// Run a command against the Redis database.
-	Command(method string, args ...interface{}) (interface{}, error)
+	Command(method string, args ...any) (any, error)
 
 	// PubSubChannels 列出当前active channels.活跃是指信道含有一个或多个订阅者(不包括从模式接收订阅的客户端) 如果pattern未提供，所有的信道都被列出，否则只列出匹配上指定全局-类型模式的信道被列出.
 	// List the currently active channels. Active means that the channel contains one or more subscribers (excluding clients receiving subscriptions from the pattern). If pattern is not provided, all channels are listed, otherwise only lists matching the specified global- Channels of type mode are listed.
@@ -88,7 +88,7 @@ type RedisConnection interface {
 
 	// Publish 将信息 message 发送到指定的频道 channel
 	// Send the information message to the specified channel channel.
-	Publish(channel string, message interface{}) (int64, error)
+	Publish(channel string, message any) (int64, error)
 
 	// Get 返回给定键的值
 	// Returns the value of the given key.
@@ -96,7 +96,7 @@ type RedisConnection interface {
 
 	// MGet 获取所有给定键的值
 	// get the values of all the given keys.
-	MGet(keys ...string) ([]interface{}, error)
+	MGet(keys ...string) ([]any, error)
 
 	// GetBit 对 key 所储存的字符串值，对获取指定偏移量上的位(bit)
 	// For the string value stored in key, get the bit at the specified offset.
@@ -132,7 +132,7 @@ type RedisConnection interface {
 
 	// GetSet 自动将key对应到value并且返回原来key对应的value。如果key存在但是对应的value不是字符串，就返回错误
 	// Automatically map the key to the value and return the value corresponding to the original key. If the key exists but the corresponding value is not a string, return an error.
-	GetSet(key string, value interface{}) (string, error)
+	GetSet(key string, value any) (string, error)
 
 	// ClientGetName 返回连接的名称
 	// returns the name of the connection.
@@ -238,7 +238,7 @@ type RedisConnection interface {
 	// setter start
 	// Set 将键key设定为指定的“字符串”值
 	// Set the key key to the specified "string" value.
-	Set(key string, value interface{}, expiration time.Duration) (string, error)
+	Set(key string, value any, expiration time.Duration) (string, error)
 
 	// Append 如果 key 已经存在，并且值为字符串，那么这个命令会把 value 追加到原来值（value）的结尾。 如果 key 不存在，那么它将首先创建一个空字符串的key，再执行追加操作，这种情况 APPEND 将类似于 SET 操作
 	// If key already exists and the value is a string, then this command appends value to the end of the original value. If the key does not exist, then it will first create a key with an empty string, and then perform the append operation, in which case APPEND will be similar to the SET operation.
@@ -246,19 +246,19 @@ type RedisConnection interface {
 
 	// MSet 对应给定的keys到他们相应的values上。MSET会用新的value替换已经存在的value，就像普通的SET命令一样。如果你不想覆盖已经存在的values，请参看命令MSETNX。
 	// Map the given keys to their corresponding values. MSET will replace the existing value with the new value, just like a normal SET command. If you do not want to overwrite existing values, see the command MSETNX.
-	MSet(values ...interface{}) (string, error)
+	MSet(values ...any) (string, error)
 
 	// MSetNX 对应给定的keys到他们相应的values上。只要有一个key已经存在，MSETNX一个操作都不会执行。 由于这种特性，MSETNX可以实现要么所有的操作都成功，要么一个都不执行，这样可以用来设置不同的key，来表示一个唯一的对象的不同字段。
 	// Map the given keys to their corresponding values. As long as a key already exists, MSETNX will not perform an operation. Because of this feature, MSETNX can achieve either all operations succeed or none of them are executed, which can be used to set different keys to represent different fields of a unique object.
-	MSetNX(values ...interface{}) (bool, error)
+	MSetNX(values ...any) (bool, error)
 
 	// SetNX 将key设置值为value，如果key不存在，这种情况下等同SET命令。 当key存在时，什么也不做, SETNX是”SET if Not eXists”的简写。
 	// Set the key to value, if the key does not exist, this case is equivalent to the SET command. When the key exists, do nothing, SETNX is short for "SET if Not eXists".
-	SetNX(key string, value interface{}, expiration time.Duration) (bool, error)
+	SetNX(key string, value any, expiration time.Duration) (bool, error)
 
 	// SetEX 设置key对应字符串value，并且设置key在给定的seconds时间之后超时过期
 	// Set the key corresponding to the string value, and set the key to expire after the given seconds time.
-	SetEX(key string, value interface{}, expiration time.Duration) (string, error)
+	SetEX(key string, value any, expiration time.Duration) (string, error)
 
 	// SetBit 设置或者清空key的value(字符串)在offset处的bit值
 	// set or clear the bit value of the key's value (string) at offset.
@@ -305,7 +305,7 @@ type RedisConnection interface {
 
 	// HMGet 返回 key 指定的哈希集中指定字段的值。
 	// Returns the value of the specified field in the hash set specified by key.
-	HMGet(key string, fields ...string) ([]interface{}, error)
+	HMGet(key string, fields ...string) ([]any, error)
 
 	// HKeys 返回 key 指定的哈希集中所有字段的名字。
 	// Returns the names of all fields in the hash set specified by key.
@@ -329,15 +329,15 @@ type RedisConnection interface {
 
 	// HSet 设置 key 指定的哈希集中指定字段的值。
 	// Sets the value of the specified field in the hash set specified by key.
-	HSet(key string, values ...interface{}) (int64, error)
+	HSet(key string, values ...any) (int64, error)
 
 	// HSetNX 只在 key 指定的哈希集中不存在指定的字段时，设置字段的值。如果 key 指定的哈希集不存在，会创建一个新的哈希集并与 key 关联。如果字段已存在，该操作无效果。
 	// Sets the field's value only if the specified field does not exist in the hash set specified by key. If the hash set specified by key does not exist, a new hash set is created and associated with key. If the field already exists, this operation has no effect.
-	HSetNX(key, field string, value interface{}) (bool, error)
+	HSetNX(key, field string, value any) (bool, error)
 
 	// HMSet 设置 key 指定的哈希集中指定字段的值。该命令将重写所有在哈希集中存在的字段。如果 key 指定的哈希集不存在，会创建一个新的哈希集并与 key 关联
 	// Sets the value of the specified field in the hash set specified by key. This command will rewrite all fields present in the hashset. If the hash set specified by key does not exist, a new hash set will be created and associated with key.
-	HMSet(key string, values ...interface{}) (bool, error)
+	HMSet(key string, values ...any) (bool, error)
 
 	// HDel 从 key 指定的哈希集中移除指定的域。在哈希集中不存在的域将被忽略。
 	// Removes the specified domain from the hash set specified by key. Domains that do not exist in the hashset will be ignored.
@@ -360,7 +360,7 @@ type RedisConnection interface {
 	// set start
 	// SAdd 添加一个或多个指定的member元素到集合的 key中.指定的一个或者多个元素member 如果已经在集合key中存在则忽略.如果集合key 不存在，则新建集合key,并添加member元素到集合key中.如果key 的类型不是集合则返回错误.
 	// Add one or more specified member elements to the set key. If the specified one or more member elements already exist in the set key, it will be ignored. If the set key does not exist, create a new set key and add the member element to the set key. If the type of key is not a collection, an error is returned.
-	SAdd(key string, members ...interface{}) (int64, error)
+	SAdd(key string, members ...any) (int64, error)
 
 	// SCard 返回集合存储的key的基数 (集合元素的数量).
 	// Returns the cardinality of the key stored in the collection (the number of elements in the collection).
@@ -384,7 +384,7 @@ type RedisConnection interface {
 
 	// SIsMember 返回成员 member 是否是存储的集合 key的成员.
 	// Returns whether member member is a member of the stored collection key.
-	SIsMember(key string, member interface{}) (bool, error)
+	SIsMember(key string, member any) (bool, error)
 
 	// SMembers 返回key集合所有的元素.
 	// Returns all elements of the key collection.
@@ -392,7 +392,7 @@ type RedisConnection interface {
 
 	// SRem 在key集合中移除指定的元素. 如果指定的元素不是key集合中的元素则忽略 如果key集合不存在则被视为一个空的集合，该命令返回0. 如果key的类型不是一个集合,则返回错误.
 	// Removes the specified element from the key set. If the specified element is not an element in the key set, it is ignored. If the key set does not exist, it is treated as an empty set, and the command returns 0. If the type of key is not a set, then returns an error.
-	SRem(key string, members ...interface{}) (int64, error)
+	SRem(key string, members ...any) (int64, error)
 
 	// SPopN 从存储在key的集合中移除并返回多个随机元素
 	// Redis `SPOP key count` command.Remove and return multiple random elements from the collection stored at key.
@@ -408,7 +408,7 @@ type RedisConnection interface {
 
 	// SMove 将member从source集合移动到destination集合中. 对于其他的客户端,在特定的时间元素将会作为source或者destination集合的成员出现.
 	// Moves the member from the source collection to the destination collection. For other clients, the element will appear as a member of the source or destination collection at a specific time.
-	SMove(source, destination string, member interface{}) (bool, error)
+	SMove(source, destination string, member any) (bool, error)
 
 	// SRandMember 随机返回key集合中的一个元素.
 	// Randomly returns an element in the key collection.
@@ -478,7 +478,7 @@ type RedisConnection interface {
 
 	// LInsert 把 value 插入存于 key 的列表中在基准值 pivot 的前面或后面。
 	// Inserts the value in the list stored at key before or after the pivot value.
-	LInsert(key, op string, pivot, value interface{}) (int64, error)
+	LInsert(key, op string, pivot, value any) (int64, error)
 
 	// LLen 返回存储在 key 里的list的长度。 如果 key 不存在，那么就被看作是空list，并且返回长度为 0。 当存储在 key 里的值不是一个list的话，会返回error。
 	// Returns the length of the list stored in key. If the key does not exist, it is treated as an empty list, and the return length is 0. An error is returned when the value stored in key is not a list.
@@ -490,11 +490,11 @@ type RedisConnection interface {
 
 	// LPush 将所有指定的值插入到存于 key 的列表的头部。如果 key 不存在，那么在进行 push 操作前会创建一个空列表。 如果 key 对应的值不是一个 list 的话，那么会返回一个错误。
 	// Inserts all specified values at the head of the list stored at key. If the key does not exist, an empty list is created before the push operation. If the value corresponding to key is not a list, an error will be returned.
-	LPush(key string, values ...interface{}) (int64, error)
+	LPush(key string, values ...any) (int64, error)
 
 	// LPushX 只有当 key 已经存在并且存着一个 list 的时候，在这个 key 下面的 list 的头部插入 value。 与 LPUSH 相反，当 key 不存在的时候不会进行任何操作。
 	// Insert value at the head of the list below the key only if the key already exists and a list exists. Contrary to LPUSH, no operation is performed when the key does not exist.
-	LPushX(key string, values ...interface{}) (int64, error)
+	LPushX(key string, values ...any) (int64, error)
 
 	// LRange 返回存储在 key 的列表里指定范围内的元素。
 	// Returns the elements in the specified range stored in the list at key.
@@ -502,11 +502,11 @@ type RedisConnection interface {
 
 	// LRem 从存于 key 的列表里移除前 count 次出现的值为 value 的元素
 	// Removes the first count occurrences of the element whose value is value from the list stored at key.
-	LRem(key string, count int64, value interface{}) (int64, error)
+	LRem(key string, count int64, value any) (int64, error)
 
 	// LSet 设置 index 位置的list元素的值为 value。
 	// Sets the value of the list element at index position to value.
-	LSet(key string, index int64, value interface{}) (string, error)
+	LSet(key string, index int64, value any) (string, error)
 
 	// LTrim 修剪(trim)一个已存在的 list，这样 list 就会只包含指定范围的指定元素。
 	// Trim an existing list so that the list contains only the specified elements in the specified range.
@@ -526,11 +526,11 @@ type RedisConnection interface {
 
 	// RPush 向存于 key 的列表的尾部插入所有指定的值。如果 key 不存在，那么会创建一个空的列表然后再进行 push 操作。 当 key 保存的不是一个列表，那么会返回一个错误。
 	// Inserts all specified values to the end of the list stored at key. If the key does not exist, an empty list is created and then the push operation is performed. When key does not hold a list, an error is returned.
-	RPush(key string, values ...interface{}) (int64, error)
+	RPush(key string, values ...any) (int64, error)
 
 	// RPushX 将值 value 插入到列表 key 的表尾, 当且仅当 key 存在并且是一个列表。 和 RPUSH 命令相反, 当 key 不存在时，RPUSHX 命令什么也不做。
 	// Inserts the value value at the end of the list key if and only if key exists and is a list. Contrary to the RPUSH command, the RPUSHX command does nothing when the key does not exist.
-	RPushX(key string, values ...interface{}) (int64, error)
+	RPushX(key string, values ...any) (int64, error)
 
 	// lists end
 
@@ -538,11 +538,11 @@ type RedisConnection interface {
 
 	// Eval 在服务器端执行 LUA 脚本。
 	// Execute LUA scripts on the server side.
-	Eval(script string, keys []string, args ...interface{}) (interface{}, error)
+	Eval(script string, keys []string, args ...any) (any, error)
 
 	// EvalSha 根据给定的 SHA1 校验码，对缓存在服务器中的脚本进行求值。 将脚本缓存到服务器的操作可以通过 SCRIPT LOAD 命令进行。 这个命令的其他地方，比如参数的传入方式，都和 EVAL命令一样。
 	// Evaluate the script cached in the server against the given SHA1 checksum. Caching scripts to the server can be done with the SCRIPT LOAD command. The rest of this command, such as the way parameters are passed in, are the same as the EVAL command.
-	EvalSha(sha1 string, keys []string, args ...interface{}) (interface{}, error)
+	EvalSha(sha1 string, keys []string, args ...any) (any, error)
 
 	// ScriptExists 检查脚本是否存在脚本缓存里面。
 	// Check if the script exists in the script cache.
@@ -618,7 +618,7 @@ type RedisConnection interface {
 
 	// ZRem 移除有序集中的一个或多个成员，不存在的成员将被忽略。
 	// Removes one or more members from the sorted set, non-existing members are ignored.
-	ZRem(key string, members ...interface{}) (int64, error)
+	ZRem(key string, members ...any) (int64, error)
 
 	// ZRemRangeByLex 移除有序集合中给定的字典区间的所有成员。
 	// Removes all members of the given dictionary range in the sorted set.
@@ -668,7 +668,7 @@ type RedisConnectionCtx interface {
 
 	// CommandWithContext 对 Redis 数据库运行命令
 	// Run a CommandWithContext against the Redis database.
-	CommandWithContext(ctx context.Context, method string, args ...interface{}) (interface{}, error)
+	CommandWithContext(ctx context.Context, method string, args ...any) (any, error)
 
 	PubSubChannelsWithContext(ctx context.Context, pattern string) ([]string, error)
 
@@ -676,7 +676,7 @@ type RedisConnectionCtx interface {
 
 	PubSubNumPatWithContext(ctx context.Context) (int64, error)
 
-	PublishWithContext(ctx context.Context, channel string, message interface{}) (int64, error)
+	PublishWithContext(ctx context.Context, channel string, message any) (int64, error)
 
 	// GetWithContext 返回给定键的值
 	// Returns the value of the given key.
@@ -684,7 +684,7 @@ type RedisConnectionCtx interface {
 
 	// MGetWithContext 获取所有给定键的值
 	// get the values of all the given keys.
-	MGetWithContext(ctx context.Context, keys ...string) ([]interface{}, error)
+	MGetWithContext(ctx context.Context, keys ...string) ([]any, error)
 
 	// GetBitWithContext 对 key 所储存的字符串值，对获取指定偏移量上的位(bit)
 	// For the string value stored in key, get the bit at the specified offset.
@@ -704,7 +704,7 @@ type RedisConnectionCtx interface {
 
 	GetRangeWithContext(ctx context.Context, key string, start, end int64) (string, error)
 
-	GetSetWithContext(ctx context.Context, key string, value interface{}) (string, error)
+	GetSetWithContext(ctx context.Context, key string, value any) (string, error)
 
 	ClientGetNameWithContext(ctx context.Context) (string, error)
 
@@ -760,17 +760,17 @@ type RedisConnectionCtx interface {
 	// keys end
 
 	// setter start
-	SetWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error)
+	SetWithContext(ctx context.Context, key string, value any, expiration time.Duration) (string, error)
 
 	AppendWithContext(ctx context.Context, key, value string) (int64, error)
 
-	MSetWithContext(ctx context.Context, values ...interface{}) (string, error)
+	MSetWithContext(ctx context.Context, values ...any) (string, error)
 
-	MSetNXWithContext(ctx context.Context, values ...interface{}) (bool, error)
+	MSetNXWithContext(ctx context.Context, values ...any) (bool, error)
 
-	SetNXWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (bool, error)
+	SetNXWithContext(ctx context.Context, key string, value any, expiration time.Duration) (bool, error)
 
-	SetEXWithContext(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error)
+	SetEXWithContext(ctx context.Context, key string, value any, expiration time.Duration) (string, error)
 
 	SetBitWithContext(ctx context.Context, key string, offset int64, value int) (int64, error)
 
@@ -795,7 +795,7 @@ type RedisConnectionCtx interface {
 
 	HGetAllWithContext(ctx context.Context, key string) (map[string]string, error)
 
-	HMGetWithContext(ctx context.Context, key string, fields ...string) ([]interface{}, error)
+	HMGetWithContext(ctx context.Context, key string, fields ...string) ([]any, error)
 
 	HKeysWithContext(ctx context.Context, key string) ([]string, error)
 
@@ -807,11 +807,11 @@ type RedisConnectionCtx interface {
 
 	HValuesWithContext(ctx context.Context, key string) ([]string, error)
 
-	HSetWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+	HSetWithContext(ctx context.Context, key string, values ...any) (int64, error)
 
-	HSetNXWithContext(ctx context.Context, key, field string, value interface{}) (bool, error)
+	HSetNXWithContext(ctx context.Context, key, field string, value any) (bool, error)
 
-	HMSetWithContext(ctx context.Context, key string, values ...interface{}) (bool, error)
+	HMSetWithContext(ctx context.Context, key string, values ...any) (bool, error)
 
 	HDelWithContext(ctx context.Context, key string, fields ...string) (int64, error)
 
@@ -824,7 +824,7 @@ type RedisConnectionCtx interface {
 	// hash end
 
 	// set start
-	SAddWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+	SAddWithContext(ctx context.Context, key string, members ...any) (int64, error)
 
 	SCardWithContext(ctx context.Context, key string) (int64, error)
 
@@ -836,11 +836,11 @@ type RedisConnectionCtx interface {
 
 	SInterStoreWithContext(ctx context.Context, destination string, keys ...string) (int64, error)
 
-	SIsMemberWithContext(ctx context.Context, key string, member interface{}) (bool, error)
+	SIsMemberWithContext(ctx context.Context, key string, member any) (bool, error)
 
 	SMembersWithContext(ctx context.Context, key string) ([]string, error)
 
-	SRemWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+	SRemWithContext(ctx context.Context, key string, members ...any) (int64, error)
 
 	SPopNWithContext(ctx context.Context, key string, count int64) ([]string, error)
 
@@ -848,7 +848,7 @@ type RedisConnectionCtx interface {
 
 	SRandMemberNWithContext(ctx context.Context, key string, count int64) ([]string, error)
 
-	SMoveWithContext(ctx context.Context, source, destination string, member interface{}) (bool, error)
+	SMoveWithContext(ctx context.Context, source, destination string, member any) (bool, error)
 
 	SRandMemberWithContext(ctx context.Context, key string) (string, error)
 
@@ -888,21 +888,21 @@ type RedisConnectionCtx interface {
 
 	LIndexWithContext(ctx context.Context, key string, index int64) (string, error)
 
-	LInsertWithContext(ctx context.Context, key, op string, pivot, value interface{}) (int64, error)
+	LInsertWithContext(ctx context.Context, key, op string, pivot, value any) (int64, error)
 
 	LLenWithContext(ctx context.Context, key string) (int64, error)
 
 	LPopWithContext(ctx context.Context, key string) (string, error)
 
-	LPushWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+	LPushWithContext(ctx context.Context, key string, values ...any) (int64, error)
 
-	LPushXWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+	LPushXWithContext(ctx context.Context, key string, values ...any) (int64, error)
 
 	LRangeWithContext(ctx context.Context, key string, start, stop int64) ([]string, error)
 
-	LRemWithContext(ctx context.Context, key string, count int64, value interface{}) (int64, error)
+	LRemWithContext(ctx context.Context, key string, count int64, value any) (int64, error)
 
-	LSetWithContext(ctx context.Context, key string, index int64, value interface{}) (string, error)
+	LSetWithContext(ctx context.Context, key string, index int64, value any) (string, error)
 
 	LTrimWithContext(ctx context.Context, key string, start, stop int64) (string, error)
 
@@ -912,16 +912,16 @@ type RedisConnectionCtx interface {
 
 	RPopLPushWithContext(ctx context.Context, source, destination string) (string, error)
 
-	RPushWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+	RPushWithContext(ctx context.Context, key string, values ...any) (int64, error)
 
-	RPushXWithContext(ctx context.Context, key string, values ...interface{}) (int64, error)
+	RPushXWithContext(ctx context.Context, key string, values ...any) (int64, error)
 
 	// lists end
 
 	// scripting start
-	EvalWithContext(ctx context.Context, script string, keys []string, args ...interface{}) (interface{}, error)
+	EvalWithContext(ctx context.Context, script string, keys []string, args ...any) (any, error)
 
-	EvalShaWithContext(ctx context.Context, sha1 string, keys []string, args ...interface{}) (interface{}, error)
+	EvalShaWithContext(ctx context.Context, sha1 string, keys []string, args ...any) (any, error)
 
 	ScriptExistsWithContext(ctx context.Context, hashes ...string) ([]bool, error)
 
@@ -961,7 +961,7 @@ type RedisConnectionCtx interface {
 
 	ZRankWithContext(ctx context.Context, key, member string) (int64, error)
 
-	ZRemWithContext(ctx context.Context, key string, members ...interface{}) (int64, error)
+	ZRemWithContext(ctx context.Context, key string, members ...any) (int64, error)
 
 	ZRemRangeByLexWithContext(ctx context.Context, key, min, max string) (int64, error)
 

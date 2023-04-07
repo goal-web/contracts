@@ -5,11 +5,11 @@ import "time"
 type Console interface {
 	// Call 按名称运行 控制台命令
 	// run  console command by name.
-	Call(command string, arguments CommandArguments) interface{}
+	Call(command string, arguments CommandArguments) any
 
 	// Run 运行传入的控制台命令
 	// run an incoming console command.
-	Run(input ConsoleInput) interface{}
+	Run(input ConsoleInput) any
 
 	// Schedule 注册任务调度
 	// register Task Scheduler.
@@ -34,7 +34,7 @@ type CommandProvider func(application Application) Command
 type Command interface {
 	// Handle 处理传入的控制台命令
 	// handle an incoming console command.
-	Handle() interface{}
+	Handle() any
 
 	// InjectArguments 注入控制台命令参数
 	// Inject console command parameters.
@@ -69,8 +69,8 @@ type ConsoleInput interface {
 
 type CommandArguments interface {
 	FieldsProvider
-	Getter
-	OptionalGetter
+	Getter[any]
+	OptionalGetter[any]
 
 	// GetArg 获取控制台命令指定参数
 	// Get the specified parameters of the console command.
@@ -82,7 +82,7 @@ type CommandArguments interface {
 
 	// SetOption 设置控制台命令选项
 	// Set console command options.
-	SetOption(key string, value interface{})
+	SetOption(key string, value any)
 
 	// Exists 验证指定的键是否存在
 	// Verify if the specified key exists.
@@ -117,7 +117,7 @@ type Schedule interface {
 
 	// Call 将新的回调事件添加到计划中
 	// Add a new callback event to the schedule.
-	Call(callback interface{}, args ...interface{}) CallbackEvent
+	Call(callback any, args ...any) CallbackEvent
 
 	// Command 将新的命令事件添加到日程表
 	// Add a new command event to the schedule.

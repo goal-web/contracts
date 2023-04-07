@@ -21,31 +21,31 @@ type Route interface {
 type RouteGroup interface {
 	// Get 向路由组注册一个新的 GET 路由。
 	// Register a new GET route with the route group.
-	Get(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Get(path string, handler any, middlewares ...any) RouteGroup
 
 	// Post 向路由组注册一个新的 POST 路由。
 	// Register a new POST route with the route group.
-	Post(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Post(path string, handler any, middlewares ...any) RouteGroup
 
 	// Delete 向路由组注册一个新的 DELETE 路由。
 	// Register a new DELETE route with the routing group.
-	Delete(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Delete(path string, handler any, middlewares ...any) RouteGroup
 
 	// Put 向路由组注册一个新的 PUT 路由。
 	// Register a new PUT route with the routing group.
-	Put(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Put(path string, handler any, middlewares ...any) RouteGroup
 
 	// Patch 向路由组注册一个新的 PATCH 路由。
 	// Register a new PATCH route with the routing group.
-	Patch(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Patch(path string, handler any, middlewares ...any) RouteGroup
 
 	// Options 向路由组注册一个新的 OPTIONS 路由。
 	// Register a new OPTIONS route with the routing group.
-	Options(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Options(path string, handler any, middlewares ...any) RouteGroup
 
 	// Trace 向路由组注册一个新的 TRACE 路由。
 	// Register a new TRACE route with the routing group.
-	Trace(path string, handler interface{}, middlewares ...interface{}) RouteGroup
+	Trace(path string, handler any, middlewares ...any) RouteGroup
 
 	// Middlewares 获取附加到路由的中间件
 	// Get the middlewares attached to the route.
@@ -53,7 +53,7 @@ type RouteGroup interface {
 
 	// Group 创建具有共享属性的路由组。
 	// Create a route group with shared attributes.
-	Group(prefix string, middlewares ...interface{}) RouteGroup
+	Group(prefix string, middlewares ...any) RouteGroup
 
 	// Routes 获取路由
 	// get route.
@@ -68,39 +68,39 @@ type Router interface {
 	Static(path string, directory string)
 	// Get 向路由器注册一个新的 GET 路由。
 	// Register a new GET route with the router.
-	Get(path string, handler interface{}, middlewares ...interface{})
+	Get(path string, handler any, middlewares ...any)
 
 	// Post 向路由器注册一个新的 POST 路由。
 	// Register a new POST route with the router.
-	Post(path string, handler interface{}, middlewares ...interface{})
+	Post(path string, handler any, middlewares ...any)
 
 	// Delete 向路由器注册一个新的 DELETE 路由。
 	// Register a new DELETE route with the router.
-	Delete(path string, handler interface{}, middlewares ...interface{})
+	Delete(path string, handler any, middlewares ...any)
 
 	// Put 向路由器注册一个新的 PUT 路由。
 	// Register a new PUT route with the router.
-	Put(path string, handler interface{}, middlewares ...interface{})
+	Put(path string, handler any, middlewares ...any)
 
 	// Patch 向路由器注册一个新的 PATCH 路由。
 	// Register a new PATCH route with the router.
-	Patch(path string, handler interface{}, middlewares ...interface{})
+	Patch(path string, handler any, middlewares ...any)
 
 	// Options 向路由器注册一个新的 OPTIONS 路由。
 	// Register a new OPTIONS route with the router.
-	Options(path string, handler interface{}, middlewares ...interface{})
+	Options(path string, handler any, middlewares ...any)
 
 	// Trace 向路由器注册一个新的 TRACE 路由
 	// Register a new TRACE route with the router.
-	Trace(path string, handler interface{}, middlewares ...interface{})
+	Trace(path string, handler any, middlewares ...any)
 
 	// Use  使用中间件
 	// use middleware.
-	Use(middlewares ...interface{})
+	Use(middlewares ...any)
 
 	// Group 创建具有共享属性的路由组。
 	// Create a route group with shared attributes.
-	Group(prefix string, middlewares ...interface{}) RouteGroup
+	Group(prefix string, middlewares ...any) RouteGroup
 
 	// Start 启动 httpserver
 	// start httpserver.

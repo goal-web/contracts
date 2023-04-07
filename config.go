@@ -1,9 +1,9 @@
 package contracts
 
-type ConfigProvider func(env Env) interface{}
+type ConfigProvider func(env Env) any
 
 type Config interface {
-	Getter
+	Getter[any]
 	FieldsProvider
 
 	// Load 根据给定的字段提供者加载配置
@@ -14,13 +14,9 @@ type Config interface {
 	// reload configuration based on given field provider.
 	Reload()
 
-	// Get 获取指定的配置值
-	// get the specified configuration value.
-	Get(key string, defaultValue ...interface{}) interface{}
-
 	// Set 设置给定的配置值
 	// set a given configuration value.
-	Set(key string, value interface{})
+	Set(key string, value any)
 
 	// Unset 销毁指定的配置值
 	// Destroy the specified configuration value.
@@ -28,8 +24,8 @@ type Config interface {
 }
 
 type Env interface {
-	Getter
-	OptionalGetter
+	Getter[any]
+	OptionalGetter[any]
 
 	FieldsProvider
 

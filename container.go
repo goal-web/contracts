@@ -4,21 +4,21 @@ import "reflect"
 
 // InstanceProvider 容器实例提供者
 // container instance provider
-type InstanceProvider func() interface{}
+type InstanceProvider[T any] func() T
 
 type Container interface {
 
 	// Bind 向容器注册绑定
 	// Register a binding with the container.
-	Bind(string, interface{})
+	Bind(string, any)
 
 	// Instance 将现有实例注册为在容器中共享
 	// Register an existing instance as shared in the container.
-	Instance(string, interface{})
+	Instance(string, any)
 
 	// Singleton 在容器中注册一个共享绑定
 	// Register a shared binding in the container.
-	Singleton(string, interface{})
+	Singleton(string, any)
 
 	// HasBound 判断是否绑定
 	// Determine whether to bind.
@@ -34,19 +34,19 @@ type Container interface {
 
 	// Get 从容器中获取给定的类型
 	// get the given type from the container.
-	Get(key string, args ...interface{}) interface{}
+	Get(key string, args ...any) any
 
 	// Call 调用给定的 fn class@method 并注入其依赖项。
 	// call the given fn / class@method and inject its dependencies.
-	Call(fn interface{}, args ...interface{}) []interface{}
+	Call(fn any, args ...any) []any
 
 	// StaticCall 调用给定的 magical func class@method 并注入其依赖项。
 	// call the given magical func / class@method and inject its dependencies.
-	StaticCall(fn MagicalFunc, args ...interface{}) []interface{}
+	StaticCall(fn MagicalFunc, args ...any) []any
 
 	// DI 从容器中注入给定的类型
 	// injects the given type from the container.
-	DI(object interface{}, args ...interface{})
+	DI(object any, args ...any)
 }
 
 // Component 可注入的类

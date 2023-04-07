@@ -15,7 +15,7 @@ type WebSocket interface {
 
 	// Send 发送消息给指定 fd 的连接
 	// send a message to the connection with the specified fd.
-	Send(fd uint64, message interface{}) error
+	Send(fd uint64, message any) error
 }
 
 type WebSocketConnection interface {
@@ -33,7 +33,7 @@ type WebSocketConnection interface {
 type WebSocketSender interface {
 	// Send 发送消息给该连接
 	// send a message to this connection
-	Send(message interface{}) error
+	Send(message any) error
 
 	// SendBytes 发送消息给该连接
 	// send a message to this connection.
@@ -61,7 +61,7 @@ type WebSocketFrame interface {
 
 	// Parse 解析 json 参数
 	// Parse json parameters.
-	Parse(v interface{}) error
+	Parse(v any) error
 }
 
 type WebSocketController interface {

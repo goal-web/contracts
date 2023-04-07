@@ -8,7 +8,7 @@ type Exception interface {
 type ExceptionHandler interface {
 	// Handle 处理异常
 	// Handle the exception, and return the specified result.
-	Handle(exception Exception) interface{}
+	Handle(exception Exception) any
 
 	// ShouldReport 判断是否需要上报
 	// Determine whether to report.
