@@ -6,10 +6,6 @@ type Config interface {
 	Getter[any]
 	FieldsProvider
 
-	// Load 根据给定的字段提供者加载配置
-	// load configuration based on given field provider.
-	Load(provider FieldsProvider)
-
 	// Reload 根据给定的字段提供者加载配置
 	// reload configuration based on given field provider.
 	Reload()
@@ -26,8 +22,6 @@ type Config interface {
 type Env interface {
 	Getter[any]
 	OptionalGetter[any]
-
-	FieldsProvider
 
 	// Load 加载配置
 	// load configuration.
