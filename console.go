@@ -68,7 +68,6 @@ type ConsoleInput interface {
 }
 
 type CommandArguments interface {
-	FieldsProvider
 	Getter[any]
 	OptionalGetter[any]
 

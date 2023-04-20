@@ -2,7 +2,7 @@ package contracts
 
 import "time"
 
-type QueueFactory interface {
+type QueueManager interface {
 	// Connection 解析队列连接实例
 	// Resolve a queue connection instance.
 	Connection(name ...string) Queue
@@ -12,13 +12,12 @@ type QueueFactory interface {
 	Extend(name string, driver QueueDriver)
 }
 
-type Msg struct {
+type QueueMsg struct {
 	Ack Ack
 	Job Job
 }
 
 type Ack func()
-
 
 // QueueDriver 通过给定的信息获取队列连接
 // Get queue connection with given information.
@@ -56,7 +55,7 @@ type Queue interface {
 
 	// Listen 监听给定的队列
 	// listen to the given queue.
-	Listen(queue ...string) chan Msg
+	Listen(queue ...string) chan QueueMsg
 
 	// Stop 关闭队列
 	// close queue.

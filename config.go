@@ -3,6 +3,7 @@ package contracts
 type ConfigProvider func(env Env) any
 
 type Config interface {
+	OptionalGetter[any]
 	Getter[any]
 	FieldsProvider
 
