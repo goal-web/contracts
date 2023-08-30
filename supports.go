@@ -61,6 +61,24 @@ type Getter[T any] interface {
 	GetBool(key string) bool
 }
 
+type GetterE[T any] interface {
+	GetE(key string) (T, error)
+	GetStringE(key string) (string, error)
+	GetInt64E(key string) (int64, error)
+	GetInt32E(key string) (int32, error)
+	GetInt16E(key string) (int16, error)
+	GetInt8E(key string) (int8, error)
+	GetIntE(key string) (int, error)
+	GetUInt64E(key string) (uint64, error)
+	GetUInt32E(key string) (uint32, error)
+	GetUInt16E(key string) (uint16, error)
+	GetUInt8E(key string) (uint8, error)
+	GetUIntE(key string) (uint, error)
+	GetFloat64E(key string) (float64, error)
+	GetFloatE(key string) (float32, error)
+	GetBoolE(key string) (bool, error)
+}
+
 type OptionalGetter[T any] interface {
 	Optional(key string, value T) T
 	StringOptional(key string, defaultValue string) string
@@ -77,4 +95,22 @@ type OptionalGetter[T any] interface {
 	Float64Optional(key string, defaultValue float64) float64
 	FloatOptional(key string, defaultValue float32) float32
 	BoolOptional(key string, defaultValue bool) bool
+}
+
+type OptionalGetterE[T any] interface {
+	OptionalE(key string, value T) (T, error)
+	StringOptionalE(key string, defaultValue string) (string, error)
+	Int64OptionalE(key string, defaultValue int64) (int64, error)
+	Int32OptionalE(key string, defaultValue int32) (int32, error)
+	Int16OptionalE(key string, defaultValue int16) (int16, error)
+	Int8OptionalE(key string, defaultValue int8) (int8, error)
+	IntOptionalE(key string, defaultValue int) (int, error)
+	UInt64OptionalE(key string, defaultValue uint64) (uint64, error)
+	UInt32OptionalE(key string, defaultValue uint32) (uint32, error)
+	UInt16OptionalE(key string, defaultValue uint16) (uint16, error)
+	UInt8OptionalE(key string, defaultValue uint8) (uint8, error)
+	UIntOptionalE(key string, defaultValue uint) (uint, error)
+	Float64OptionalE(key string, defaultValue float64) (float64, error)
+	FloatOptionalE(key string, defaultValue float32) (float32, error)
+	BoolOptionalE(key string, defaultValue bool) (bool, error)
 }

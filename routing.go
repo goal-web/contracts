@@ -1,5 +1,11 @@
 package contracts
 
+import (
+	"net/url"
+)
+
+type RouteParams map[string]string
+
 type Route interface {
 	// Middlewares 获取附加到路由的中间件
 	// Get the middlewares attached to the route.
@@ -9,13 +15,18 @@ type Route interface {
 	// Get the request method attached to the route.
 	Method() []string
 
-	// Path 获取附加到路由的请求路径
+	// GetPath 获取附加到路由的请求路径
 	// Get the request path attached to the route.
-	Path() string
+	GetPath() string
+	GetHost() string
+	Host(host string) Route
+	GetName() string
 
 	// Handler 获取附加到路由的路由处理程序
 	// Get the route handler attached to the route.
 	Handler() MagicalFunc
+
+	Name(name string) Route
 }
 
 type RouteGroup interface {
@@ -47,66 +58,67 @@ type RouteGroup interface {
 	// Register a new TRACE route with the routing group.
 	Trace(path string, handler any, middlewares ...any) RouteGroup
 
-	// Middlewares 获取附加到路由的中间件
-	// Get the middlewares attached to the route.
+	// Group 创建具有共享属性的路由组。
+	// Create a route group with shared attributes.
+	Group(prefix string, middlewares ...any) RouteGroup
+
+	GetHost() string
+	Host(host string) RouteGroup
+
+	// Routes 获取路由
+	// get route.
+	Routes() []Route
+}
+
+type HttpRouter interface {
+	// Get 向路由器注册一个新的 GET 路由。
+	// Register a new GET route with the router.
+	Get(path string, handler any, middlewares ...any) Route
+
+	// Post 向路由器注册一个新的 POST 路由。
+	// Register a new POST route with the router.
+	Post(path string, handler any, middlewares ...any) Route
+
+	// Delete 向路由器注册一个新的 DELETE 路由。
+	// Register a new DELETE route with the router.
+	Delete(path string, handler any, middlewares ...any) Route
+
+	// Put 向路由器注册一个新的 PUT 路由。
+	// Register a new PUT route with the router.
+	Put(path string, handler any, middlewares ...any) Route
+
+	// Patch 向路由器注册一个新的 PATCH 路由。
+	// Register a new PATCH route with the router.
+	Patch(path string, handler any, middlewares ...any) Route
+
+	// Options 向路由器注册一个新的 OPTIONS 路由。
+	// Register a new OPTIONS route with the router.
+	Options(path string, handler any, middlewares ...any) Route
+
+	// Trace 向路由器注册一个新的 TRACE 路由
+	// Register a new TRACE route with the router.
+	Trace(path string, handler any, middlewares ...any) Route
+
+	// Use  使用中间件
+	// use middleware.
+	Use(middlewares ...any)
+
+	// Middlewares 返回全局中间件
 	Middlewares() []MagicalFunc
 
 	// Group 创建具有共享属性的路由组。
 	// Create a route group with shared attributes.
 	Group(prefix string, middlewares ...any) RouteGroup
 
-	// Routes 获取路由
-	// get route.
-	Routes() []Route
+	// Mount 装配路由
+	Mount() error
 
-	// Groups 获取路由组
-	// get routing group.
-	Groups() []RouteGroup
+	// Route 通过 url 找到合适的路由
+	Route(method string, url *url.URL) (Route, RouteParams, error)
 }
 
-type Router interface {
-	Static(path string, directory string)
-	// Get 向路由器注册一个新的 GET 路由。
-	// Register a new GET route with the router.
-	Get(path string, handler any, middlewares ...any)
-
-	// Post 向路由器注册一个新的 POST 路由。
-	// Register a new POST route with the router.
-	Post(path string, handler any, middlewares ...any)
-
-	// Delete 向路由器注册一个新的 DELETE 路由。
-	// Register a new DELETE route with the router.
-	Delete(path string, handler any, middlewares ...any)
-
-	// Put 向路由器注册一个新的 PUT 路由。
-	// Register a new PUT route with the router.
-	Put(path string, handler any, middlewares ...any)
-
-	// Patch 向路由器注册一个新的 PATCH 路由。
-	// Register a new PATCH route with the router.
-	Patch(path string, handler any, middlewares ...any)
-
-	// Options 向路由器注册一个新的 OPTIONS 路由。
-	// Register a new OPTIONS route with the router.
-	Options(path string, handler any, middlewares ...any)
-
-	// Trace 向路由器注册一个新的 TRACE 路由
-	// Register a new TRACE route with the router.
-	Trace(path string, handler any, middlewares ...any)
-
-	// Use  使用中间件
-	// use middleware.
-	Use(middlewares ...any)
-
-	// Group 创建具有共享属性的路由组。
-	// Create a route group with shared attributes.
-	Group(prefix string, middlewares ...any) RouteGroup
-
-	// Start 启动 httpserver
-	// start httpserver.
-	Start(address string) error
-
-	// Close 关闭 httpserver
-	// close httpserver.
-	Close() error
+type Router[T any] interface {
+	Find(route string) (T, RouteParams, error)
+	Add(route string, data T) (string, error)
+	IsEmpty() bool
 }
