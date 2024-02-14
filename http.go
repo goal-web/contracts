@@ -99,6 +99,9 @@ type HttpRequest interface {
 	// saves data in the context.
 	Set(key string, val any)
 
+	Only(keys ...string) Fields
+	Except(keys ...string) Fields
+
 	GetHeader(key string) string
 
 	SetHeader(key, value string)
