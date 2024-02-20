@@ -31,6 +31,8 @@ type HttpRequest interface {
 	OptionalGetter[any]
 	FieldsProvider
 
+	Parse(form any) error
+
 	// IsTLS 如果 HTTP 连接是 TLS，则返回 true，否则返回 false
 	// returns true if HTTP connection is TLS otherwise false.
 	IsTLS() bool
