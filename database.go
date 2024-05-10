@@ -163,15 +163,15 @@ type QueryExecutor[T any] interface {
 
 	// Chunk 将查询结果分块
 	// chunk the results of the query.
-	Chunk(size int, handler func(collection Collection[T], page int) Exception) Exception
+	Chunk(size int, handler func(collection Collection[*T], page int) Exception) Exception
 
 	// ChunkById 通过比较 ID 对查询结果进行分块
 	// chunk the results of a query by comparing IDs.
-	ChunkById(size int, handler func(collection Collection[T], page int) (any, Exception)) Exception
+	ChunkById(size int, handler func(collection Collection[*T], page int) (any, Exception)) Exception
 
 	// ChunkByIdDesc 通过比较 ID 对查询结果进行分块
 	// chunk the results of a query by comparing IDs.
-	ChunkByIdDesc(size int, handler func(collection Collection[T], page int) (any, Exception)) Exception
+	ChunkByIdDesc(size int, handler func(collection Collection[*T], page int) (any, Exception)) Exception
 
 	// Insert 向数据库中插入新记录
 	// insert new records into the database.
@@ -207,7 +207,7 @@ type QueryExecutor[T any] interface {
 
 	// Create 保存新模型并返回实例
 	// Save a new model and return the instance.
-	Create(fields Fields) T
+	Create(fields Fields) *T
 
 	// CreateE 保存新模型并返回实例
 	// Save a new model and return the instance.
@@ -219,7 +219,7 @@ type QueryExecutor[T any] interface {
 
 	// FirstOrCreate 获取与属性匹配的第一条记录或创建它
 	// get the first record matching the attributes or create it.
-	FirstOrCreate(where Fields, values ...Fields) T
+	FirstOrCreate(where Fields, values ...Fields) *T
 
 	// Update 更新数据库中的记录
 	// update records in the database.
@@ -239,7 +239,7 @@ type QueryExecutor[T any] interface {
 
 	// UpdateOrCreate 创建或更新与属性匹配的记录，并用值填充它
 	// create or update a record matching the attributes, and fill it with values.
-	UpdateOrCreate(attributes, values Fields) T
+	UpdateOrCreate(attributes, values Fields) *T
 
 	// UpdateOrCreateE 创建或更新与属性匹配的记录，并用值填充它
 	// create or update a record matching the attributes, and fill it with values.
@@ -247,19 +247,19 @@ type QueryExecutor[T any] interface {
 
 	// Get 将查询作为“选择”语句执行
 	// Execute the query as a "select" statement.
-	Get() Collection[T]
+	Get() Collection[*T]
 
 	// GetE 将查询作为“选择”语句执行
 	// Execute the query as a "select" statement.
-	GetE() (Collection[T], Exception)
+	GetE() (Collection[*T], Exception)
 
 	// SelectForUpdate 锁定表中选定的行以进行更新
 	// Lock the selected rows in the table for updating.
-	SelectForUpdate() Collection[T]
+	SelectForUpdate() Collection[*T]
 
 	// SelectForUpdateE 锁定表中选定的行以进行更新
 	// Lock the selected rows in the table for updating.
-	SelectForUpdateE() (Collection[T], Exception)
+	SelectForUpdateE() (Collection[*T], Exception)
 
 	// Find 按 ID 对单个记录执行查询
 	// Execute a query for a single record by ID.
@@ -267,7 +267,7 @@ type QueryExecutor[T any] interface {
 
 	// FindOrFail 按 ID 对单个记录执行查询
 	// Execute a query for a single record by ID.
-	FindOrFail(key any) T
+	FindOrFail(key any) *T
 
 	// First 执行查询并获得第一个结果
 	// Execute the query and get the first result.
@@ -279,11 +279,11 @@ type QueryExecutor[T any] interface {
 
 	// FirstOr 执行查询并获得第一个结果或调用回调
 	// Execute the query and get the first result or call a callback.
-	FirstOr(provider InstanceProvider[T]) T
+	FirstOr(provider InstanceProvider[*T]) *T
 
 	// FirstOrFail 执行查询并获得第一个结果或抛出异常
 	// Execute the query and get the first result or throw an exception.
-	FirstOrFail() T
+	FirstOrFail() *T
 
 	// FirstWhere 向查询添加基本 where 子句，并返回第一个结果
 	// Add a basic where clause to the query, and return the first result.
@@ -303,11 +303,11 @@ type QueryExecutor[T any] interface {
 
 	// Paginate 对给定的查询进行分页。
 	// paginate the given query.
-	Paginate(perPage int64, current ...int64) (Collection[T], int64)
+	Paginate(perPage int64, current ...int64) (Collection[*T], int64)
 
 	// SimplePaginate 将给定的查询分页成一个简单的分页器
 	// paginate the given query into a simple paginator.
-	SimplePaginate(perPage int64, current ...int64) Collection[T]
+	SimplePaginate(perPage int64, current ...int64) Collection[*T]
 }
 
 type Query[T any] interface {
@@ -584,14 +584,25 @@ type Model[T any] interface {
 
 	// GetPrimaryKey 获取模型的主键
 	// Get the primary key for the model.
-	GetPrimaryKey() string
-	//
-	//// Exists 判断是否存在在数据库中
-	//Exists() bool
-	//
-	//// Update 更新实例
-	//Update(fields ...Fields) Exception
-	//
-	//// Delete 删除该实例
-	//Delete() Exception
+	GetPrimaryKey() any
+
+	// Exists 判断是否存在在数据库中
+	// Determine whether it exists in the database
+	Exists() bool
+
+	// Update 更新部分字段
+	// update some fields
+	Update(fields Fields) Exception
+
+	// Save 更新所有字段
+	// update all fields
+	Save() Exception
+
+	// Refresh  从数据库中更新所有字段
+	// refresh all fields from db
+	Refresh() Exception
+
+	// Delete 删除该实例
+	// delete from db
+	Delete() Exception
 }

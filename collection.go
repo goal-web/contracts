@@ -10,7 +10,6 @@ type Collection[T any] interface {
 	Sort(sorter func(int, int, T, T) bool) Collection[T]
 	IsEmpty() bool
 
-	// filter
 	Foreach(handle func(int, T)) Collection[T]
 	Each(handle func(int, T) T) Collection[T]
 	Filter(filter func(int, T) bool) Collection[T]
@@ -34,10 +33,10 @@ type Collection[T any] interface {
 	// Only 数据类型为 []map、[]struct 的时候起作用
 	Only(keys ...string) Collection[T]
 
-	// First 获取首个元素
-	First() *T
-	// Last 获取最后一个元素
-	Last() *T
+	// First 获取首个元素，如果存在
+	First() (T, bool)
+	// Last 获取最后一个元素，如果存在
+	Last() (T, bool)
 
 	// union、merge...
 
@@ -45,10 +44,10 @@ type Collection[T any] interface {
 	Prepend(item ...T) Collection[T]
 	// Push 从最后插入元素
 	Push(items ...T) Collection[T]
-	// Pull 从尾部获取并移出一个元素
-	Pull(defaultValue ...T) *T
-	// Shift 从头部获取并移出一个元素
-	Shift(defaultValue ...T) *T
+	// Pull 从尾部获取并移出一个元素，如果存在
+	Pull(defaultValue ...T) (T, bool)
+	// Shift 从头部获取并移出一个元素，如果存在
+	Shift(defaultValue ...T) (T, bool)
 	// Put 替换一个元素，如果 index 不存在会执行 Push，返回新集合
 	Put(index int, item T) Collection[T]
 	// Offset 替换一个元素，如果 index 不存在会执行 Push
