@@ -71,7 +71,7 @@ type DBConnection interface {
 
 // QueryCallback 查询回调，用于构建子查询
 // query callback，for building subqueries.
-type QueryCallback[T any] func(QueryBuilder[T]) Query[T]
+type QueryCallback[T any] func(Query[T]) Query[T]
 
 // QueryProvider 查询提供者
 // query provider.
@@ -79,7 +79,7 @@ type QueryProvider[T any] func() Query[T]
 
 // QueryFunc 用于构造 子 where 表达式
 // Used to construct sub-where expressions.
-type QueryFunc[T any] func(QueryBuilder[T])
+type QueryFunc[T any] func(Query[T])
 
 type WhereJoinType string
 type UnionJoinType string
