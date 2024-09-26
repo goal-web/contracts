@@ -79,4 +79,8 @@ type MagicalFunc interface {
 	// Returns 获取所有返回类型
 	// get all return types.
 	Returns() []reflect.Type
+
+	// Signature 获取所有该方法的唯一签名
+	// get signature of the function
+	Signature() string
 }

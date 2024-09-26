@@ -71,15 +71,15 @@ type DBConnection interface {
 
 // QueryCallback 查询回调，用于构建子查询
 // query callback，for building subqueries.
-type QueryCallback[T any] func(Query[T]) Query[T]
+type QueryCallback[T any] func(QueryBuilder[T]) QueryBuilder[T]
 
 // QueryProvider 查询提供者
 // query provider.
-type QueryProvider[T any] func() Query[T]
+type QueryProvider[T any] func() QueryBuilder[T]
 
 // QueryFunc 用于构造 子 where 表达式
 // Used to construct sub-where expressions.
-type QueryFunc[T any] func(Query[T])
+type QueryFunc[T any] func(QueryBuilder[T])
 
 type WhereJoinType string
 type UnionJoinType string
@@ -310,216 +310,212 @@ type QueryExecutor[T any] interface {
 	SimplePaginate(perPage int64, current ...int64) Collection[*T]
 }
 
-type Query[T any] interface {
-	QueryExecutor[T]
-	QueryBuilder[T]
-}
-
 type QueryBuilder[T any] interface {
+	QueryExecutor[T]
 
 	// Select 设置要选择的列
 	// Set the columns to be selected.
-	Select(columns ...string) Query[T]
+	Select(columns ...string) QueryBuilder[T]
 
 	// AddSelect 追加要选择的列
 	// Append the columns to be selected.
-	AddSelect(columns ...string) Query[T]
+	AddSelect(columns ...string) QueryBuilder[T]
 
 	// SelectSub 向查询中添加子选择表达式
 	// Add a subselect expression to the query.
-	SelectSub(provider QueryProvider[T], as string) Query[T]
+	SelectSub(provider QueryProvider[T], as string) QueryBuilder[T]
 
 	// AddSelectSub 向查询中追加子选择表达式
 	// Append a subselect expression to the query.
-	AddSelectSub(provider QueryProvider[T], as string) Query[T]
+	AddSelectSub(provider QueryProvider[T], as string) QueryBuilder[T]
 
 	// WithCount 添加子选择查询以计算关系
 	// Add subselect queries to count the relations.
-	WithCount(columns ...string) Query[T]
+	WithCount(columns ...string) QueryBuilder[T]
 
 	// WithAvg 添加子选择查询以包括关系列的平均值
 	// Add subselect queries to include the average of the relation's column.
-	WithAvg(column string, as ...string) Query[T]
+	WithAvg(column string, as ...string) QueryBuilder[T]
 
 	// WithSum 添加子选择查询以包括关系列的总和
 	// Add subselect queries to include the sum of the relation's column.
-	WithSum(column string, as ...string) Query[T]
+	WithSum(column string, as ...string) QueryBuilder[T]
 
 	// WithMax 添加子选择查询以包含关系列的最大值
 	// Add subselect queries to include the max of the relation's column.
-	WithMax(column string, as ...string) Query[T]
+	WithMax(column string, as ...string) QueryBuilder[T]
 
 	// WithMin 添加子选择查询以包括关系列的最小值
 	// Add subselect queries to include the min of the relation's column.
-	WithMin(column string, as ...string) Query[T]
+	WithMin(column string, as ...string) QueryBuilder[T]
 
 	// Distinct 强制查询只返回不同的结果
 	// Force the query to only return distinct results.
-	Distinct() Query[T]
+	Distinct() QueryBuilder[T]
 
 	// From 设置查询所针对的表
 	// Set the table which the query is targeting.
-	From(table string, as ...string) Query[T]
+	From(table string, as ...string) QueryBuilder[T]
 
 	// FromMany 设置许多查询所针对的表
 	// Set the table that many queries are against.
-	FromMany(tables ...string) Query[T]
+	FromMany(tables ...string) QueryBuilder[T]
 
-	// FromSub 从子查询中“从”获取
+	// FromSub 从子查询中 “从”获取
 	// Makes "from" fetch from a subquery.
-	FromSub(provider QueryProvider[T], as string) Query[T]
+	FromSub(provider QueryProvider[T], as string) QueryBuilder[T]
 
 	// Join 向查询中添加连接子句
 	// Add a join clause to the query.
-	Join(table string, first, condition, second string, joins ...JoinType) Query[T]
+	Join(table string, first, condition, second string, joins ...JoinType) QueryBuilder[T]
 
 	// JoinSub 向查询添加子查询连接子句
 	// Add a subquery join clause to the query.
-	JoinSub(provider QueryProvider[T], as, first, condition, second string, joins ...JoinType) Query[T]
+	JoinSub(provider QueryProvider[T], as, first, condition, second string, joins ...JoinType) QueryBuilder[T]
 
 	// FullJoin 向查询添加全连接，两表关联查询它们的所有记录。
 	// Add a full join to the query, associate the two tables, and query all their records.
-	FullJoin(table string, first, condition, second string) Query[T]
+	FullJoin(table string, first, condition, second string) QueryBuilder[T]
 
 	// FullOutJoin 向查询添加完整外部连接
 	// Add a full outer join to the query
-	FullOutJoin(table string, first, condition, second string) Query[T]
+	FullOutJoin(table string, first, condition, second string) QueryBuilder[T]
 
 	// LeftJoin 向查询添加左连接
 	// Add a left join to the query.
-	LeftJoin(table string, first, condition, second string) Query[T]
+	LeftJoin(table string, first, condition, second string) QueryBuilder[T]
 
 	// RightJoin 向查询添加右连接
 	// Add a right join to the query.
-	RightJoin(table string, first, condition, second string) Query[T]
+	RightJoin(table string, first, condition, second string) QueryBuilder[T]
 
 	// Where 向查询添加基本 where 子句
 	// Add a basic where clause to the query.
-	Where(column string, args ...any) Query[T]
+	Where(column string, args ...any) QueryBuilder[T]
 
 	// WhereFields 将 where 子句数组添加到查询中
 	// Add an array of where clauses to the query.
-	WhereFields(fields Fields) Query[T]
+	WhereFields(fields Fields) QueryBuilder[T]
 
 	// OrWhere 在查询中添加“或 where”子句
 	// Add an "or where" clause to the query.
-	OrWhere(column string, args ...any) Query[T]
+	OrWhere(column string, args ...any) QueryBuilder[T]
 
 	//WhereFunc 向查询中添加嵌套的 where 语句
 	// Add a nested where statement to the query.
-	WhereFunc(callback QueryFunc[T], whereType ...WhereJoinType) Query[T]
+	WhereFunc(callback QueryFunc[T], whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereFunc 向查询中添加嵌套的 or where 语句
 	// Add a nested "or where" statement to the query
-	OrWhereFunc(callback QueryFunc[T]) Query[T]
+	OrWhereFunc(callback QueryFunc[T]) QueryBuilder[T]
 
 	// WhereIn 在查询中添加“where in”子句
 	// Add a "where in" clause to the query.
-	WhereIn(column string, args any, whereType ...WhereJoinType) Query[T]
+	WhereIn(column string, args any, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereIn 在查询中添加“or where in”子句
 	// Add an "or where in" clause to the query.
-	OrWhereIn(column string, args any) Query[T]
+	OrWhereIn(column string, args any) QueryBuilder[T]
 
 	// WhereNotIn 在查询中添加“where not in”子句
 	// Add a "where not in" clause to the query.
-	WhereNotIn(column string, args any, whereType ...WhereJoinType) Query[T]
+	WhereNotIn(column string, args any, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereNotIn 在查询中添加“or where not in”子句
 	// Add an "or where not in" clause to the query.
-	OrWhereNotIn(column string, args any) Query[T]
+	OrWhereNotIn(column string, args any) QueryBuilder[T]
 
 	// WhereBetween 在查询中添加 where between 语句
 	// Add a where between statement to the query.
-	WhereBetween(column string, args any, whereType ...WhereJoinType) Query[T]
+	WhereBetween(column string, args any, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereBetween 在查询中添加 or where between 语句
 	// Add an or where between statement to the query.
-	OrWhereBetween(column string, args any) Query[T]
+	OrWhereBetween(column string, args any) QueryBuilder[T]
 
 	// WhereNotBetween 在查询中添加 where not between 语句
 	// Add a where not between statement to the query.
-	WhereNotBetween(column string, args any, whereType ...WhereJoinType) Query[T]
+	WhereNotBetween(column string, args any, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereNotBetween 在查询中添加 or where not between 语句
 	// Add an or where not between statement to the query.
-	OrWhereNotBetween(column string, args any) Query[T]
+	OrWhereNotBetween(column string, args any) QueryBuilder[T]
 
 	// WhereIsNull 在查询中添加“where null”子句
 	// Add a "where null" clause to the query.
-	WhereIsNull(column string, whereType ...WhereJoinType) Query[T]
+	WhereIsNull(column string, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereIsNull 在查询中添加“or where null”子句
 	// Add an "or where null" clause to the query.
-	OrWhereIsNull(column string) Query[T]
+	OrWhereIsNull(column string) QueryBuilder[T]
 
 	// OrWhereNotNull 在查询中添加“or where not null”子句
 	// Add an "or where not null" clause to the query.
-	OrWhereNotNull(column string) Query[T]
+	OrWhereNotNull(column string) QueryBuilder[T]
 
 	// WhereNotNull 在查询中添加“where not null”子句
 	// Add a "where not null" clause to the query.
-	WhereNotNull(column string, whereType ...WhereJoinType) Query[T]
+	WhereNotNull(column string, whereType ...WhereJoinType) QueryBuilder[T]
 
 	// WhereExists 在查询中添加一个存在子句
 	// Add an exists clause to the query.
-	WhereExists(provider QueryProvider[T], where ...WhereJoinType) Query[T]
+	WhereExists(provider QueryProvider[T], where ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereExists 向查询中添加或存在子句
 	// Add an or exists clause to the query.
-	OrWhereExists(provider QueryProvider[T]) Query[T]
+	OrWhereExists(provider QueryProvider[T]) QueryBuilder[T]
 
 	// WhereNotExists 在查询中添加 where not exists 子句
 	// Add a where not exists clause to the query.
-	WhereNotExists(provider QueryProvider[T], where ...WhereJoinType) Query[T]
+	WhereNotExists(provider QueryProvider[T], where ...WhereJoinType) QueryBuilder[T]
 
 	// OrWhereNotExists 在查询中添加 where not exists 子句
 	// Add a where not exists clause to the query.
-	OrWhereNotExists(provider QueryProvider[T]) Query[T]
+	OrWhereNotExists(provider QueryProvider[T]) QueryBuilder[T]
 
 	// Union 在查询中添加联合语句
 	// Add a union statement to the query.
-	Union(builder QueryBuilder[T], unionType ...UnionJoinType) Query[T]
+	Union(builder QueryBuilder[T], unionType ...UnionJoinType) QueryBuilder[T]
 
 	// UnionAll 在查询中添加 union all 语句
 	// Add a union all statement to the query.
-	UnionAll(builder QueryBuilder[T]) Query[T]
+	UnionAll(builder QueryBuilder[T]) QueryBuilder[T]
 
 	// UnionByProvider 在查询中添加联合语句，并order by
 	// Add a union statement to the query and order by.
-	UnionByProvider(builder QueryProvider[T], unionType ...UnionJoinType) Query[T]
+	UnionByProvider(builder QueryProvider[T], unionType ...UnionJoinType) QueryBuilder[T]
 
 	// UnionAllByProvider 在查询中添加 union all 语句，并order by
 	// Add a union all statement to the query and order by.
-	UnionAllByProvider(builder QueryProvider[T]) Query[T]
+	UnionAllByProvider(builder QueryProvider[T]) QueryBuilder[T]
 
 	// GroupBy 在查询中添加“group by”子句
 	// Add a "group by" clause to the query.
-	GroupBy(columns ...string) Query[T]
+	GroupBy(columns ...string) QueryBuilder[T]
 
 	// Having 在查询中添加“有”子句
 	// Add a "having" clause to the query.
-	Having(column string, args ...any) Query[T]
+	Having(column string, args ...any) QueryBuilder[T]
 
 	// OrHaving 在查询中添加“或有”子句
 	// Add an "or having" clause to the query.
-	OrHaving(column string, args ...any) Query[T]
+	OrHaving(column string, args ...any) QueryBuilder[T]
 
-	// OrderBy 在查询中添加“order by”子句
+	// OrderBy 在查询中添加 “order by” 子句
 	// Add an "order by" clause to the query.
-	OrderBy(column string, columnOrderType ...OrderType) Query[T]
+	OrderBy(column string, columnOrderType ...OrderType) QueryBuilder[T]
 
-	// OrderByDesc 向查询中添加降序“order by”子句
+	// OrderByDesc 向查询中添加降序 “order by” 子句
 	// Add a descending "order by" clause to the query.
-	OrderByDesc(column string) Query[T]
+	OrderByDesc(column string) QueryBuilder[T]
 
 	// InRandomOrder 将查询的结果按随机顺序排列
 	// Put the query's results in random order.
-	InRandomOrder(orderFunc ...OrderType) Query[T]
+	InRandomOrder(orderFunc ...OrderType) QueryBuilder[T]
 
-	// When 如果给定的“值”为真，则应用回调的查询更改
+	// When 如果给定的 “值” 为真，则应用回调的查询更改
 	// Apply the callback's query changes if the given "value" is true.
-	When(condition bool, callback QueryCallback[T], elseCallback ...QueryCallback[T]) Query[T]
+	When(condition bool, callback QueryCallback[T], elseCallback ...QueryCallback[T]) QueryBuilder[T]
 
 	// ToSql 获取查询的 SQL 表示
 	// get the SQL representation of the query.
@@ -529,25 +525,25 @@ type QueryBuilder[T any] interface {
 	// get the current query value bindings in a flattened array.
 	GetBindings() (results []any)
 
-	// Offset 设置查询的“Offset”值
+	// Offset 设置查询的 “Offset” 值
 	// Set the "offset" value of the query.
-	Offset(offset int64) Query[T]
+	Offset(offset int64) QueryBuilder[T]
 
-	// Skip 设置查询“Skip”值的别名
+	// Skip 设置查询 “Skip” 值的别名
 	// Alias to set the "offset" value of the query.
-	Skip(offset int64) Query[T]
+	Skip(offset int64) QueryBuilder[T]
 
 	// Limit  设置查询的“limit”值
 	// Set the "limit" value of the query.
-	Limit(num int64) Query[T]
+	Limit(num int64) QueryBuilder[T]
 
-	// Take 设置查询“limit”值的别名
+	// Take 设置查询 “limit” 值的别名
 	// Alias to set the "limit" value of the query.
-	Take(num int64) Query[T]
+	Take(num int64) QueryBuilder[T]
 
-	// WithPagination 设置给定页面的”limit”值和”offset”值
+	// WithPagination 设置给定页面的 “limit” 值和 “offset” 值
 	// Set the limit and offset for a given page.
-	WithPagination(perPage int64, current ...int64) Query[T]
+	WithPagination(perPage int64, current ...int64) QueryBuilder[T]
 
 	// SelectSql 获取此 query builder 的当前规范形成的完整 SQL 字符串。
 	// Gets the complete SQL string formed by the current specifications of this query builder.
@@ -565,7 +561,7 @@ type QueryBuilder[T any] interface {
 
 	// Bind 注册查询构造器
 	// binding Query executor.
-	Bind(executor QueryExecutor[T]) Query[T]
+	Bind(executor QueryExecutor[T]) QueryBuilder[T]
 }
 
 type Model[T any] interface {
@@ -598,7 +594,7 @@ type Model[T any] interface {
 	// update all fields
 	Save() Exception
 
-	// Refresh  从数据库中更新所有字段
+	// Refresh 从数据库中更新所有字段
 	// refresh all fields from db
 	Refresh() Exception
 

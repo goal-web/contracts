@@ -75,3 +75,8 @@ type Collection[T any] interface {
 	ToAnyArray() []any
 	ToArrayFields() []Fields
 }
+
+type Collect[T any, P any] interface {
+	Collection[T]
+	ToP(func(T) P) []P
+}
