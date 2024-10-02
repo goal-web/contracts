@@ -10,7 +10,11 @@ type HttpEngine interface {
 	Start(address string) error
 	Close() error
 	Static(prefix, directory string)
-	Request() HttpRequest
+}
+
+type Middleware interface {
+	Register(name string, handler any)
+	Call(name string, params ...any) any
 }
 
 type HttpContext interface {

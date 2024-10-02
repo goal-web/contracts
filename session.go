@@ -11,7 +11,7 @@ type Session interface {
 
 	// GetId 获取当前会话 ID
 	// get the current session ID.
-	GetId() string
+	GetAuthenticatableKey() string
 
 	// SetId 设置会话 ID
 	// Set the session ID.

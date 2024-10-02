@@ -11,35 +11,35 @@ type Console interface {
 	// run an incoming console command.
 	Run(input ConsoleInput) any
 
-	// Schedule 注册任务调度
-	// register Task Scheduler.
-	Schedule(schedule Schedule)
-
-	// GetSchedule 获取任务调度
-	// get task schedule.
-	GetSchedule() Schedule
-
 	// Exists 判断是否注册某命令
 	Exists(name string) bool
 
 	// RegisterCommand 注册给定的控制台命令
 	// Register the given commands.
-	RegisterCommand(name string, command CommandProvider)
+	RegisterCommand(command CommandProvider)
+}
+
+type CommandArgType int
+
+const (
+	CommandRequiredArg CommandArgType = iota + 1 // 必要参数
+	CommandOptionalArg                           // 可选参数
+	CommandOption                                // 选项
+)
+
+type CommandArg interface {
+	GetName() string
+	GetType() CommandArgType
+	GetDefault() any
+	GetDescription() string
 }
 
 // CommandProvider 命令提供者
 // command provider.
-type CommandProvider func(application Application) Command
+type CommandProvider func() (Command, CommandHandlerProvider)
+type CommandHandlerProvider func(application Application) CommandHandler
 
 type Command interface {
-	// Handle 处理传入的控制台命令
-	// handle an incoming console command.
-	Handle() any
-
-	// InjectArguments 注入控制台命令参数
-	// Inject console command parameters.
-	InjectArguments(arguments CommandArguments) error
-
 	// GetSignature 获取控制台命令签名
 	// Get console command signature.
 	GetSignature() string
@@ -55,6 +55,17 @@ type Command interface {
 	// GetHelp 获取控制台命令帮助信息
 	// Get console command help
 	GetHelp() string
+
+	GetArgs() []CommandArg
+}
+
+type CommandHandler interface {
+	// InjectArguments 注入控制台命令参数
+	// Inject console command parameters.
+	InjectArguments([]CommandArg, CommandArguments) error
+	// Handle 处理传入的控制台命令
+	// handle an incoming console command.
+	Handle() any
 }
 
 type ConsoleInput interface {
@@ -117,10 +128,6 @@ type Schedule interface {
 	// Call 将新的回调事件添加到计划中
 	// Add a new callback event to the schedule.
 	Call(callback any, args ...any) CallbackEvent
-
-	// Command 将新的命令事件添加到日程表
-	// Add a new command event to the schedule.
-	Command(command Command, args ...string) CommandEvent
 
 	// Exec 将新的命令事件添加到计划中
 	// Add a new command event to the schedule.

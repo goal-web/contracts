@@ -28,9 +28,9 @@ type Auth interface {
 }
 
 type Authenticatable interface {
-	// GetId 获取当前已认证用户的 ID
+	// GetAuthenticatableKey 获取当前已认证用户的 ID
 	// Get the ID for the currently authenticated user.
-	GetId() string
+	GetAuthenticatableKey() string
 }
 
 type Guard interface {
@@ -42,9 +42,9 @@ type Guard interface {
 	// Get the currently authenticated user.
 	User() Authenticatable
 
-	// GetId 获取当前已认证用户的 ID
+	// GetAuthenticatableKey 获取当前已认证用户的 ID
 	// Get the ID for the currently authenticated user.
-	GetId() string
+	GetAuthenticatableKey() string
 
 	// Check 判断当前用户是否经过身份验证
 	// Determine if the current user is authenticated.

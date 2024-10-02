@@ -83,4 +83,7 @@ type MagicalFunc interface {
 	// Signature 获取所有该方法的唯一签名
 	// get signature of the function
 	Signature() string
+
+	// IsVariadic 是否存在可变参数
+	IsVariadic() bool
 }
