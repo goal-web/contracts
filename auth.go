@@ -28,6 +28,8 @@ type Auth interface {
 }
 
 type Authenticatable interface {
+	ModelContext
+
 	// GetAuthenticatableKey 获取当前已认证用户的 ID
 	// Get the ID for the currently authenticated user.
 	GetAuthenticatableKey() string

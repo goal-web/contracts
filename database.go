@@ -313,6 +313,10 @@ type QueryExecutor[T any] interface {
 type QueryBuilder[T any] interface {
 	QueryExecutor[T]
 
+	With(...RelationType) QueryBuilder[T]
+
+	GetWith() []RelationType
+
 	// Select 设置要选择的列
 	// Set the columns to be selected.
 	Select(columns ...string) QueryBuilder[T]
@@ -564,41 +568,21 @@ type QueryBuilder[T any] interface {
 	Bind(executor QueryExecutor[T]) QueryBuilder[T]
 }
 
-type Model[T any] interface {
+type ModelContext interface {
+	Set(fields Fields)
+	Get(string string) any
+}
 
-	// GetClass 获取模型的类
-	// Get the class of the model.
-	GetClass() Class[T]
+// RelationType 关联关系
+type RelationType string
 
-	// GetTable 获取与模型关联的表
-	// Get the table associated with the model.
-	GetTable() string
+type RelationCollector func(keys []any) map[string][]any
+type ForeignKeysCollector[T any] func(item *T) any
+type RelationSetter[T any] func(item *T, value []any)
 
-	// GetConnection 获取模型的数据库连接
-	// Get the database connection for the model.
-	GetConnection() string
-
-	// GetPrimaryKey 获取模型的主键
-	// Get the primary key for the model.
-	GetPrimaryKey() any
-
-	// Exists 判断是否存在在数据库中
-	// Determine whether it exists in the database
-	Exists() bool
-
-	// Update 更新部分字段
-	// update some fields
-	Update(fields Fields) Exception
-
-	// Save 更新所有字段
-	// update all fields
-	Save() Exception
-
-	// Refresh 从数据库中更新所有字段
-	// refresh all fields from db
-	Refresh() Exception
-
-	// Delete 删除该实例
-	// delete from db
-	Delete() Exception
+type Relation[T any, P any] interface {
+	GetRelationCollector() RelationCollector
+	GetForeignKeysCollector() ForeignKeysCollector[P]
+	GetRelationSetter() RelationSetter[P]
+	GetRelation() RelationType
 }

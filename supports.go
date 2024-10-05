@@ -16,6 +16,15 @@ type Context interface {
 
 type Fields map[string]any
 
+func (f Fields) Set(fields Fields) {
+	for k, v := range fields {
+		f[k] = v
+	}
+}
+func (f Fields) Get(key string) any {
+	return f[key]
+}
+
 type Interface interface {
 	reflect.Type
 	GetType() reflect.Type
@@ -36,7 +45,7 @@ type Class[T any] interface {
 }
 
 type FieldsProvider interface {
-	Fields() Fields
+	ToFields() Fields
 }
 
 type Json interface {
