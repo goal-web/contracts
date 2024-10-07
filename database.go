@@ -313,6 +313,8 @@ type QueryExecutor[T any] interface {
 type QueryBuilder[T any] interface {
 	QueryExecutor[T]
 
+	GetTableName() string
+
 	With(...RelationType) QueryBuilder[T]
 
 	GetWith() []RelationType
@@ -397,6 +399,14 @@ type QueryBuilder[T any] interface {
 	// Add a basic where clause to the query.
 	Where(column string, args ...any) QueryBuilder[T]
 
+	// WhereRaw 向查询添加基本 where 子句
+	// Add a basic where clause to the query.
+	WhereRaw(expression string, whereTypes ...WhereJoinType) QueryBuilder[T]
+
+	// OrWhereRaw 向查询添加基本 where 子句
+	// Add a basic where clause to the query.
+	OrWhereRaw(expression string) QueryBuilder[T]
+
 	// WhereFields 将 where 子句数组添加到查询中
 	// Add an array of where clauses to the query.
 	WhereFields(fields Fields) QueryBuilder[T]
@@ -464,6 +474,14 @@ type QueryBuilder[T any] interface {
 	// WhereExists 在查询中添加一个存在子句
 	// Add an exists clause to the query.
 	WhereExists(provider QueryProvider[T], where ...WhereJoinType) QueryBuilder[T]
+
+	// WhereExistsRaw 在查询中添加一个存在子句
+	// Add an exists clause to the query.
+	WhereExistsRaw(raw string, where ...WhereJoinType) QueryBuilder[T]
+
+	// OrWhereExistsRaw 在查询中添加一个存在子句
+	// Add an exists clause to the query.
+	OrWhereExistsRaw(raw string) QueryBuilder[T]
 
 	// OrWhereExists 向查询中添加或存在子句
 	// Add an or exists clause to the query.
